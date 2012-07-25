@@ -65,3 +65,7 @@ footer {
     padding: 17px 0 18px 0;
     text-align: center;
 }
+
+.page-header{
+  height:30px;
+}
