@@ -1,0 +1,59 @@
+<html>
+<head>
+  <meta http-equiv="Content-type" content="text/html; charset=utf-8">
+  <title>Phil Monroe</title>
+  <style type="text/css" media="screen">
+  pre {
+    width: 30em;
+    margin: 100px auto;
+    word-wrap: break-word;
+  }
+  .key { color: red; }
+  </style>
+</head>
+<body>
+  <script>
+  function output(inp) {
+      document.body.appendChild(document.createElement('pre')).innerHTML = inp;
+  }
+
+  function highlightKeys(obj) {
+    for (var prop in obj) {
+      if (obj.hasOwnProperty(prop)) {
+        key = "<span class='key'>" + prop + "</span>"
+        obj[key] = obj[prop]
+        obj[prop] = undefined
+      }
+    }
+  }
+
+  window.phil = {
+    name: "Phil Monroe",
+    email: "<a href='mailto:phil@philmonroe.com'>phil@philmonroe.com</a>",
+    blog: "<a href='http://foo.philmonroe.com'>foo.philmonroe.com</a>",
+    work: [
+      "Data Team Lead Developer @ <a href='http://www.identified.com'>Identified</a>",
+      "Co-Founder and Developer @ <a href='http://rbsavvy.com'>RBSavvy</a>"
+    ],
+    social: {
+      github: "<a href='https://github.com/phil-monroe'>phil-monroe</a>",
+      facebook: "<a href='https://www.facebook.com/phil.monroe'>phil.monroe</a>",
+      twitter: "<a href='https://www.twitter.com/philmonroe'>@philmonroe</a>",
+      linkedin: "<a href='http://www.linkedin.com/in/philipmonroe'>philipmonroe</a>"
+    },
+    about: "An active <a href=https://www.ruby-lang.org/en/>Rubist</a> who is fond of "
+    + "<br>        <a href=http://rubyonrails.org/>Rails</a>. Learning <a href=http://www.scala-lang.org/>Scala</a> while developing"
+    + "<br>        Hadoop pipelines with <a href=https://github.com/twitter/scalding>Scalding</a>"
+
+  };
+
+
+  highlightKeys(phil['social'])
+  highlightKeys(phil)
+
+  var str = JSON.stringify(phil, undefined, 4);
+  output(str);
+
+  </script>
+</body>
+</html>
