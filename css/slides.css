@@ -1,0 +1,110 @@
+@import url(http://fonts.googleapis.com/css?family=Droid+Serif);
+@import url(http://fonts.googleapis.com/css?family=Yanone+Kaffeesatz);
+@import url(http://fonts.googleapis.com/css?family=Ubuntu+Mono:400,700,400italic);
+
+body {
+  font-family: 'Droid Serif';
+}
+
+/* Base Slide */
+.remark-slide-content {
+  background: #272822;
+  color: #999999;
+}
+
+/* Inverse */
+
+
+/* Headhings */
+.remark-slide-content h1, .remark-slide-content h2 {
+  color: #CCCCCC;
+  line-height: 0.8em;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Yanone Kaffeesatz';
+  font-weight: 400;
+  margin-bottom: 0;
+}
+
+h6 + pre {
+  margin-top: .25em;
+}
+
+.remark-slide-content h1 { font-size: 3em; }
+.remark-slide-content h2 { font-size: 2em; }
+.remark-slide-content h3 { font-size: 1.6em; }
+
+/* Content */
+.footnote {
+  position: absolute;
+  bottom: 3em;
+}
+
+
+/* Code Blocks*/
+.hljs-default .hljs {
+  text-shadow: none;
+  color: #E6E1DC;
+  background: #282828;
+
+  -moz-border-radius: 5px;
+  -web-border-radius: 5px;
+  border-radius: 5px;
+  border: thin solid #666666;
+}
+
+.hljs .hljs-keyword {
+  color: #CC7833;
+}
+
+.hljs .hljs-annotation{
+  color: #6D9CBE;
+}
+
+.hljs .hljs-string {
+  color: #A5C261;
+}
+
+.hljs .hljs-title {
+  color: #6D9CBE;
+}
+
+.remark-code, .remark-inline-code { font-family: 'Ubuntu Mono'; }
+.remark-code-line-highlighted     { background-color: #373832; }
+
+
+/* Helpers */
+.pull-left {
+  float: left;
+  width: 47%;
+}
+.pull-right {
+  float: right;
+  width: 47%;
+}
+.pull-right ~ p {
+  clear: both;
+}
+
+.red { color: #fa0000; }
+.large { font-size: 2em; }
+
+/* Two-column layout */
+/*.left-column {
+  color: #777;
+  width: 20%;
+  height: 92%;
+  float: left;
+}
+
+.left-column h2:last-of-type, .left-column h3:last-child {
+  color: #000;
+}
+
+.right-column {
+  width: 75%;
+  float: right;
+  padding-top: 1em;
+}
+*/
