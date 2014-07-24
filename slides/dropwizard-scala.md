@@ -110,7 +110,7 @@ class: center middle inverse
 ---
 # Hello World!
 
-###### HelloWorldResource.scala
+###### resources/HelloWorldResource.scala
 ``` scala
 @Path("/helloworld")
 @Produces(Array(MediaType.APPLICATION_JSON))
