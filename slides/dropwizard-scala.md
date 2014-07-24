@@ -2,6 +2,21 @@ class: center, middle
 
 # Dropwizard + Scala
 
+???
+
+- [Introduction]()
+- [Running / Deployment](#5)
+- [Services]()
+- [Configs]()
+- [Resources]()
+- [Bundles]()
+- [Admin Interface]()
+  - [Metrics]()
+  - [Health Checks]()
+  - [Tasks]()
+
+
+
 ---
 class: middle
 
@@ -26,22 +41,36 @@ class: middle
         "facebook": "phil.monroe",
         "twitter": "@philmonroe",
         "linkedin": "philipmonroe"
-    }
+    },
+
+    "slides": "philmonroe.com/slides/dropwizard-scala"
 }
 ```
 
-
----
-# Agenda
-
-1. Introduction
-2. Deep-dive
-3. ...
-
-
 ---
 
-# Introduction
+class: middle center
+
+![scala](/img/dropwizard-scala.png)
+
+---
+class: center middle inverse
+
+# Running Dropwizard Applications
+
+---
+class: center middle inverse
+
+``` bash
+java -jar dw-application.jar server config.yml
+```
+
+---
+class: center middle inverse
+
+``` bash
+java -jar dw-application.jar
+```
 
 ---
 class: center middle inverse
