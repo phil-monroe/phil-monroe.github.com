@@ -29,7 +29,9 @@ class: middle
         "linkedin": "philipmonroe"
     },
 
-    "slides": "philmonroe.com/slides/dropwizard-scala"
+    "slides": "philmonroe.com/slides/dropwizard-scala",
+
+    "example": "https://github.com/phil-monroe/scala-dropwizard-example"
 }
 ```
 
