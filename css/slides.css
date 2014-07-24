@@ -12,6 +12,15 @@ body {
   color: #999999;
 }
 
+a {
+  color: #ABDB25;
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
 /* Inverse */
 
 
