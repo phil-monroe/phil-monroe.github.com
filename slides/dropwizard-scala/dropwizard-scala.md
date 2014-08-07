@@ -27,20 +27,25 @@ class: middle
         "facebook": "phil.monroe",
         "twitter": "@philmonroe",
         "linkedin": "philipmonroe"
-    },
+    }
+}
+```
 
+---
+class: middle
+
+``` javascript
+{
     "slides": "philmonroe.com/slides/dropwizard-scala",
 
     "example": "https://github.com/phil-monroe/scala-dropwizard-example"
 }
 ```
 
-
 ---
 class: middle center
 
-![scala](/img/dropwizard-scala.png)
-
+![scala](/slides/dropwizard-scala/img/dropwizard-scala.png)
 
 ---
 class: center middle inverse
@@ -56,7 +61,7 @@ class: middle inverse
 ```
 
 ---
-class: middle inverse
+class: middle inversegi
 
 ``` sh
 > java -jar dw-application.jar
@@ -66,29 +71,31 @@ class: middle inverse
 
 
 ---
-class: center middle inverse
-
-# Services
+class: middle inverse
+background-image: url(/slides/dropwizard-scala/img/dropwizard-starting.png)
 
 ---
-# Basic Service
+class: center middle inverse
 
-###### TweetMeService.scala
+# Applications
+
+---
+# Basic Application
+
+###### DwExampleApp.scala
 ``` scala
-class TweetMeService extends Application[TweetMeConfig] with Logging {
-  override def getName = "Tweet Me"
+class DwExampleApp extends Application[DwExampleConfig] with Logging {
+  override def getName = "Dropwizard Example"
 
-  val scalaBundle = new ScalaBundle
-
-
-  override def initialize(bootstrap: Bootstrap[GitHubStatusConfig]): Unit = {
+  override def initialize(bootstrap: Bootstrap[DwExampleConfig]): Unit = {
     // Various setup
-    bootstrap.addBundle(scalaBundle)
+    bootstrap.addBundle(new ScalaBundle)
   }
 
 
-  override def run(config: GitHubStatusConfig, env: Environment): Unit = {
+  override def run(config: DwExampleConfig, env: Environment): Unit = {
     // Register RESTful things
+    env.jersey().register(new HelloWorldResource)
   }
 }
 
@@ -100,6 +107,46 @@ class: center middle inverse
 
 # Configs
 
+---
+# Basic Config
+
+###### DwExampleConfig.scala
+``` scala
+class DwExampleConfig extends Configuration {
+  @Valid
+  @NotNull
+  private val server: ServerFactory = new SimpleServerFactory
+
+
+  @Valid
+  val twitter = new TwitterConfig
+
+
+  @Valid
+  @NotNull
+  val elasticSearchUrl = System.getenv("BONSAI_URL")
+
+  @Valid
+  @NotNull
+  val hostname = System.getenv("HOSTNAME")
+}
+```
+
+---
+# Config File
+###### config.yml
+``` yaml
+twitter:
+  apiKey:         "API_KEY"
+  apiSecret:      "API_SECRET"
+  oauthToken:     "AUTH_TOKEN"
+  oauthSecret:    "AUTH_SECRET"
+  topics:         "scala"
+
+elasticSearchUrl: "http://localhost:9200"
+
+hostname:         "localhost:8080"
+```
 
 ---
 class: center middle inverse
@@ -113,7 +160,7 @@ class: center middle inverse
 ###### resources/HelloWorldResource.scala
 ``` scala
 @Path("/helloworld")
-@Produces(Array(MediaType.APPLICATION_JSON))
+@Produces(Array(MediaType.TEXT_PLAIN))
 class HelloWorldResource {
 
   @GET
@@ -164,3 +211,67 @@ override def run(config: Config, env: Environment): Unit = {
 }
 ```
 
+
+---
+class: middle, center
+
+# Admin Interface
+
+---
+class: middle, center
+
+# Beyond Dropwizard
+
+---
+class: center, middle
+# Swagger
+
+### Super awesome API documentation
+---
+background-image: url(/slides/dropwizard-scala/img/swagger.png)
+
+
+---
+class: center, middle
+# Jooq
+
+### Programmatic SQL Queries
+
+---
+# Jooq
+###### Setup
+``` scala
+// Database
+class JooqExecutor(dataSource: DataSource, dialect: SQLDialect) {
+  def apply[T](body: DSLContext => T): T = {
+    val conn = dataSource.getConnection
+    try{
+      val dslContext = DSL.using(conn, jooqSqlDialect, new Settings)
+      body(dslContext)
+    } finally { conn.close }
+  }
+}
+
+val dataSource = config.dbFactory.build(env.metrics(), "database")
+env.lifecycle().manage(dataSource)
+
+val jooq = new JooqExecutor(dataSource, SQLDialect.POSTGRESQL, new Settings )
+```
+
+###### Query
+``` scala
+jooq { sql =>
+  sql.select(FOO_TABLE.VERSION.max)
+    .from(FOO_TABLE)
+    .where(FOO_TABLE.TYPE eq "bar")
+    .fetchOne()._1
+}
+
+```
+
+---
+class: center
+# Links
+[dropwizard.github.io/dropwizard](https://dropwizard.github.io/dropwizard)
+
+[helloreverb.com/developers/swagger](https://helloreverb.com/developers/swagger)
