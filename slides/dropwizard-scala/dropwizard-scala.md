@@ -1,9 +1,10 @@
 class: center, middle
-# Dropwizard + Scala
+# Fast API Development with
+# Scala + Dropwizard
 
 
 ---
-class: middle
+# About Me
 
 ``` javascript
 {
@@ -32,12 +33,15 @@ class: middle
 
 
 ---
-class: middle
+# Show Me The Code!
+
 ``` javascript
 {
     "slides": "philmonroe.com/slides/dropwizard-scala",
 
-    "example": "https://github.com/phil-monroe/scala-dropwizard-example"
+    "example": "github.com/phil-monroe/scala-dropwizard-example",
+
+    "demo": "scala-dropwizard-example.herokuapp.com/docs/"
 }
 ```
 
@@ -117,20 +121,14 @@ class: center middle inverse
 ``` scala
 class DwExampleConfig extends Configuration {
   @Valid
-  @NotNull
-  private val server: ServerFactory = new SimpleServerFactory
-
-
-  @Valid
   val twitter = new TwitterConfig
 
-
-  @Valid
   @NotNull
+  @JsonProperty
   val elasticSearchUrl = System.getenv("BONSAI_URL")
 
-  @Valid
   @NotNull
+  @JsonProperty
   val hostname = System.getenv("HOSTNAME")
 }
 ```
@@ -206,13 +204,18 @@ class TimeResource {
 }
 ```
 
-
 ###### DwExampleApp.scala
 ``` scala
 override def run(config: Config, env: Environment): Unit = {
   env.jersey().register(new TimeResource)
 }
+
 ```
+
+
+---
+class: middle center
+![scala](/slides/dropwizard-scala/img/json-response.png)
 
 
 ---
@@ -249,7 +252,8 @@ class ManagedTweetStream(config: TwitterConfig) extends Managed {
  override def run(config: DwExampleConfig, env: Environment): Unit = {
     val tweetStream = new ManagedTweetStream(config.twitter)
     env.lifecycle().manage(tweetStream)
-  }```
+  }
+```
 
 
 ---
@@ -258,8 +262,92 @@ class: center middle inverse
 
 
 ---
+# Bundles - Basic Application
+
+###### DwExampleApp.scala
+``` scala
+class DwExampleApp extends Application[DwExampleConfig] with Logging {
+  override def getName = "Dropwizard Example"
+
+  override def initialize(bootstrap: Bootstrap[DwExampleConfig]): Unit = {
+    // Various setup
+    bootstrap.addBundle(new ScalaBundle)
+  }
+
+
+  override def run(config: DwExampleConfig, env: Environment): Unit = {
+    // Register RESTful things
+    env.jersey().register(new HelloWorldResource)
+  }
+}
+
+```
+
+
+---
+# Bundles
+
+###### setup/bundles/TweetStreamBundle.scala
+``` scala
+class TweetStreamBundle(esBundle: ElasticSearchBundle)
+  extends ConfiguredBundle[DwExampleConfig] {
+  override def initialize(bootstrap: Bootstrap[_]): Unit = {}
+
+  override def run(config: DwExampleConfig, env: Environment): Unit = {
+    val tweetStream = new TweetStream(config.twitter)
+    val processor = new TweetProcessor(
+      tweetStream.queue,
+      env.getObjectMapper,
+      esBundle.elasticsearch.get)
+
+    env.lifecycle().manage(processor)
+    env.lifecycle().manage(tweetStream)
+
+    env.healthChecks().register("tweet-stream",
+      new TweetStreamHealthcheck(tweetStream))
+  }
+}
+```
+
+
+---
+# Bundles - Updated Application
+
+###### DwExampleApp.scala
+``` scala
+class DwExampleApp extends Application[DwExampleConfig] with Logging {
+  override def getName = "Dropwizard Example"
+
+  val elasticSearchBundle = new ElasticSearchBundle
+  val tweetStreamBundle = new TweetStreamBundle(elasticSearchBundle)
+
+  override def initialize(bootstrap: Bootstrap[DwExampleConfig]): Unit = {
+    bootstrap.addBundle(new ScalaBundle)
+    bootstrap.addBundle(new SwaggerBundle)
+    bootstrap.addBundle(new ExceptionMapperBundle)
+    bootstrap.addBundle(elasticSearchBundle)
+    bootstrap.addBundle(tweetStreamBundle)
+  }
+
+  override def run(config: DwExampleConfig, env: Environment): Unit = {
+    // Resources
+    env.jersey().register(new HelloWorldResource)
+    env.jersey().register(new TimeResource)
+    env.jersey().register(
+      new SearchResource(elasticSearchBundle.elasticsearch.get))
+  }
+}
+```
+
+
+---
 class: middle, center
 # Admin Interface
+
+
+---
+class: middle center
+![scala](/slides/dropwizard-scala/img/admin-page.png)
 
 
 ---
@@ -268,8 +356,47 @@ class: center, middle
 
 
 ---
+background-image: url(/slides/dropwizard-scala/img/healthcheck-clean.png)
+
+
+---
+background-image: url(/slides/dropwizard-scala/img/healthcheck-fail.png)
+
+
+---
+# Health Checks - Elastic Search
+###### healthchecks/ElasticSearchHealthcheck.scala
+``` scala
+class ElasticSearchHealthcheck(es: ElasticSearchClient) extends HealthCheck {
+  override def check(): Result = {
+    val res = es.status
+    if (res.isSucceeded)
+      Result.healthy()
+    else
+      Result.unhealthy(res.getJsonString)
+  }
+}
+```
+
+###### setup/bundles/ElasticSearchBundle.scala
+``` scala
+  override def run(config: DwExampleConfig, env: Environment): Unit = {
+    val elasticsearch = new ManagedElasticSearchClient(config.elasticSearchUrl)
+
+    env.healthChecks().register("elasticsearch",
+      new ElasticSearchHealthcheck(elasticsearch))
+  }
+```
+
+
+---
 class: middle, center
 # Metrics
+
+
+---
+class: middle center
+![track-the-things!](/slides/dropwizard-scala/img/track-all-the-things.jpg)
 
 
 ---
@@ -299,6 +426,7 @@ class HelloWorldResource {
 
 ```
 
+
 ---
 background-image: url(/slides/dropwizard-scala/img/metrics3.png)
 
@@ -307,23 +435,55 @@ background-image: url(/slides/dropwizard-scala/img/metrics3.png)
 # Metrics - Graphite
 
 ###### config.yml
-``` yaml
+``` bash
 metrics:
   reporters:
-    - type: graphite
-      host: localhost
-      port: 8080
-      prefix: my-key-prefix
+    - type:      graphite
+      host:      localhost
+      port:      8080
+      prefix:    my-key-prefix
+      frequency: 10 second
+
 ```
 
-
+.footnote[*needs _dropwizard-metrics-graphite_ dependency]
 ---
 class: center, middle
 # Tasks
 
 
 ---
+# Tasks - Initialize ElasticSearch Index
+###### healthchecks/ElasticSearchHealthcheck.scala
+``` scala
+class CreateIndexTask(es: ElasticSearchClient) extends Task("es/create") {
+  override def execute(p: ImmutableMultimap[String, String], out: PrintWriter) {
+    val res = es.createIndex("twitter")
+
+    out.println(res.getJsonString)
+  }
+}
+```
+
+###### setup/bundles/ElasticSearchBundle.scala
+``` scala
+  override def run(config: DwExampleConfig, env: Environment): Unit = {
+    val elasticsearch = new ManagedElasticSearchClient(config.elasticSearchUrl)
+
+    env.admin().addTask(new CreateIndexTask(elasticsearch))
+  }
+```
+
+###### shell
+``` bash
+curl -XPOST http://scala-dropwizard-example.herokuapp.com/admin/tasks/es/create
+```
+
+---
+class: middle
 # Dang... What else?
+
+- Jersey / Apache HTTP Clients
 
 - JDBI / Hibernate
 
@@ -332,6 +492,19 @@ class: center, middle
 - Authentication ( HTTP Basic or OAuth )
 
 - Views ( Mustache or FreeMarker)
+
+- Custom Commands
+
+
+---
+class: middle
+# Some Annoyances / Gotchas
+
+- Java-y / Annotation heavy
+
+- A bit annoying to manage server specific configs on multiple servers
+
+- Dropped database connections did not auto-reconnect
 
 
 ---
@@ -345,6 +518,31 @@ class: center, middle
 # Swagger
 
 ### Super awesome API documentation
+
+
+---
+# Swagger - Resource Annotations
+
+###### resources/HelloResource.scala
+``` scala
+@Path("/helloworld")
+@Api(value = "/helloworld", description = "Hello World API.")
+@Produces(Array(MediaType.TEXT_PLAIN))
+class HelloWorldResource {
+
+  @GET
+  @Metered
+  @ExceptionMetered(name = "hello-errors")
+  @ApiOperation(
+    value = "Say Hello World!",
+    notes = "Greets the World.",
+    response= classOf[String],
+    produces= MediaType.TEXT_PLAIN)
+  def helloWorld: String = {
+    "Hello World"
+  }
+}
+```
 
 
 ---
@@ -389,6 +587,15 @@ jooq { sql =>
 }
 
 ```
+
+---
+class: center, middle
+# Questions?
+
+
+---
+class: center, middle
+# Thank You!
 
 
 ---
