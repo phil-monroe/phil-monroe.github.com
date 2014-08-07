@@ -21,6 +21,16 @@ a:hover {
   text-decoration: underline;
 }
 
+ul {
+  margin-top: 2em;
+  list-style: square;
+
+}
+ul li {
+  margin-bottom: .5em;
+}
+
+
 /* Inverse */
 
 

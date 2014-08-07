@@ -1,5 +1,4 @@
 class: center, middle
-
 # Dropwizard + Scala
 
 
@@ -31,9 +30,9 @@ class: middle
 }
 ```
 
+
 ---
 class: middle
-
 ``` javascript
 {
     "slides": "philmonroe.com/slides/dropwizard-scala",
@@ -42,14 +41,16 @@ class: middle
 }
 ```
 
+
 ---
 class: middle center
-
 ![scala](/slides/dropwizard-scala/img/dropwizard-scala.png)
+
+Everything you want without the hassle.
+
 
 ---
 class: center middle inverse
-
 # Running Dropwizard Applications
 
 
@@ -59,6 +60,7 @@ class: middle inverse
 ``` sh
 > java -jar dw-application.jar server config.yml
 ```
+
 
 ---
 class: middle inversegi
@@ -74,10 +76,11 @@ class: middle inversegi
 class: middle inverse
 background-image: url(/slides/dropwizard-scala/img/dropwizard-starting.png)
 
+
 ---
 class: center middle inverse
-
 # Applications
+
 
 ---
 # Basic Application
@@ -104,11 +107,11 @@ class DwExampleApp extends Application[DwExampleConfig] with Logging {
 
 ---
 class: center middle inverse
-
 # Configs
 
+
 ---
-# Basic Config
+# Configs - Config Object
 
 ###### DwExampleConfig.scala
 ``` scala
@@ -132,8 +135,9 @@ class DwExampleConfig extends Configuration {
 }
 ```
 
+
 ---
-# Config File
+# Configs - Config File
 ###### config.yml
 ``` yaml
 twitter:
@@ -148,14 +152,14 @@ elasticSearchUrl: "http://localhost:9200"
 hostname:         "localhost:8080"
 ```
 
+
 ---
 class: center middle inverse
-
 # Resources
 
 
 ---
-# Hello World!
+# Resources - Hello World!
 
 ###### resources/HelloWorldResource.scala
 ``` scala
@@ -170,8 +174,7 @@ class HelloWorldResource {
 }
 ```
 
-
-###### Service.scala
+###### DwExampleApp.scala
 ``` scala
 override def run(config: Config, env: Environment): Unit = {
   env.jersey().register(new HelloWorldResource)
@@ -180,7 +183,7 @@ override def run(config: Config, env: Environment): Unit = {
 
 
 ---
-# What time is it?
+# Resources - What time is it?
 
 ###### api/Time.scala
 ``` scala
@@ -204,7 +207,7 @@ class TimeResource {
 ```
 
 
-###### Service.scala
+###### DwExampleApp.scala
 ``` scala
 override def run(config: Config, env: Environment): Unit = {
   env.jersey().register(new TimeResource)
@@ -213,20 +216,137 @@ override def run(config: Config, env: Environment): Unit = {
 
 
 ---
-class: middle, center
+class: center middle inverse
+# Managed Objects
 
-# Admin Interface
+
+---
+# Managed Objects - Tweet Stream
+###### core/tweet_stream/ManagedTweetStream.scala
+``` scala
+class ManagedTweetStream(config: TwitterConfig) extends Managed {
+  private val hosebirdEndpoint = new StatusesFilterEndpoint()
+  hosebirdEndpoint.trackTerms(config.topics)
+
+  val hosebird = new ClientBuilder()
+    .endpoint(hosebirdEndpoint)
+    // snip...
+    .build()
+
+
+  def start(): Unit = {
+    hosebird.connect()
+  }
+
+  def stop(): Unit = {
+    hosebird.stop()
+  }
+}
+```
+
+###### setup/bundles/TweetStramBundle.scala
+``` scala
+ override def run(config: DwExampleConfig, env: Environment): Unit = {
+    val tweetStream = new ManagedTweetStream(config.twitter)
+    env.lifecycle().manage(tweetStream)
+  }```
+
+
+---
+class: center middle inverse
+# Bundles
+
 
 ---
 class: middle, center
+# Admin Interface
 
+
+---
+class: center, middle
+# Health Checks
+
+
+---
+class: middle, center
+# Metrics
+
+
+---
+background-image: url(/slides/dropwizard-scala/img/metrics1.png)
+
+
+---
+background-image: url(/slides/dropwizard-scala/img/metrics2.png)
+
+
+---
+# Metrics - Resource Annotations
+
+###### resources/HelloResource.scala
+``` scala
+@Path("/helloworld")
+@Produces(Array(MediaType.TEXT_PLAIN))
+class HelloWorldResource {
+
+  @GET
+  @Metered
+  @ExceptionMetered(name = "hello-errors")
+  def helloWorld: String = {
+    "Hello World"
+  }
+}
+
+```
+
+---
+background-image: url(/slides/dropwizard-scala/img/metrics3.png)
+
+
+---
+# Metrics - Graphite
+
+###### config.yml
+``` yaml
+metrics:
+  reporters:
+    - type: graphite
+      host: localhost
+      port: 8080
+      prefix: my-key-prefix
+```
+
+
+---
+class: center, middle
+# Tasks
+
+
+---
+# Dang... What else?
+
+- JDBI / Hibernate
+
+- Migrations
+
+- Authentication ( HTTP Basic or OAuth )
+
+- Views ( Mustache or FreeMarker)
+
+
+---
+class: middle, center
 # Beyond Dropwizard
+
+### A few more libraries that make life awesome.
 
 ---
 class: center, middle
 # Swagger
 
 ### Super awesome API documentation
+
+
 ---
 background-image: url(/slides/dropwizard-scala/img/swagger.png)
 
@@ -236,6 +356,7 @@ class: center, middle
 # Jooq
 
 ### Programmatic SQL Queries
+
 
 ---
 # Jooq
@@ -269,9 +390,12 @@ jooq { sql =>
 
 ```
 
+
 ---
-class: center
-# Links
+class: center, middle
+# References
 [dropwizard.github.io/dropwizard](https://dropwizard.github.io/dropwizard)
 
 [helloreverb.com/developers/swagger](https://helloreverb.com/developers/swagger)
+
+[jooq.org](http://www.jooq.org/)
