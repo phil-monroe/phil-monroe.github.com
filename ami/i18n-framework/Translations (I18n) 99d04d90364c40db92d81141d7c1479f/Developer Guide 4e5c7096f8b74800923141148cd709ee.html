@@ -1,0 +1,811 @@
+<html><head><meta http-equiv="Content-Type" content="text/html; charset=utf-8"/><title>Developer Guide</title><style>
+/* cspell:disable-file */
+/* webkit printing magic: print all background colors */
+html {
+	-webkit-print-color-adjust: exact;
+}
+* {
+	box-sizing: border-box;
+	-webkit-print-color-adjust: exact;
+}
+
+html,
+body {
+	margin: 0;
+	padding: 0;
+}
+@media only screen {
+	body {
+		margin: 2em auto;
+		max-width: 900px;
+		color: rgb(55, 53, 47);
+	}
+}
+
+body {
+	line-height: 1.5;
+	white-space: pre-wrap;
+}
+
+a,
+a.visited {
+	color: inherit;
+	text-decoration: underline;
+}
+
+.pdf-relative-link-path {
+	font-size: 80%;
+	color: #444;
+}
+
+h1,
+h2,
+h3 {
+	letter-spacing: -0.01em;
+	line-height: 1.2;
+	font-weight: 600;
+	margin-bottom: 0;
+}
+
+.page-title {
+	font-size: 2.5rem;
+	font-weight: 700;
+	margin-top: 0;
+	margin-bottom: 0.75em;
+}
+
+h1 {
+	font-size: 1.875rem;
+	margin-top: 1.875rem;
+}
+
+h2 {
+	font-size: 1.5rem;
+	margin-top: 1.5rem;
+}
+
+h3 {
+	font-size: 1.25rem;
+	margin-top: 1.25rem;
+}
+
+.source {
+	border: 1px solid #ddd;
+	border-radius: 3px;
+	padding: 1.5em;
+	word-break: break-all;
+}
+
+.callout {
+	border-radius: 3px;
+	padding: 1rem;
+}
+
+figure {
+	margin: 1.25em 0;
+	page-break-inside: avoid;
+}
+
+figcaption {
+	opacity: 0.5;
+	font-size: 85%;
+	margin-top: 0.5em;
+}
+
+mark {
+	background-color: transparent;
+}
+
+.indented {
+	padding-left: 1.5em;
+}
+
+hr {
+	background: transparent;
+	display: block;
+	width: 100%;
+	height: 1px;
+	visibility: visible;
+	border: none;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.09);
+}
+
+img {
+	max-width: 100%;
+}
+
+@media only print {
+	img {
+		max-height: 100vh;
+		object-fit: contain;
+	}
+}
+
+@page {
+	margin: 1in;
+}
+
+.collection-content {
+	font-size: 0.875rem;
+}
+
+.column-list {
+	display: flex;
+	justify-content: space-between;
+}
+
+.column {
+	padding: 0 1em;
+}
+
+.column:first-child {
+	padding-left: 0;
+}
+
+.column:last-child {
+	padding-right: 0;
+}
+
+.table_of_contents-item {
+	display: block;
+	font-size: 0.875rem;
+	line-height: 1.3;
+	padding: 0.125rem;
+}
+
+.table_of_contents-indent-1 {
+	margin-left: 1.5rem;
+}
+
+.table_of_contents-indent-2 {
+	margin-left: 3rem;
+}
+
+.table_of_contents-indent-3 {
+	margin-left: 4.5rem;
+}
+
+.table_of_contents-link {
+	text-decoration: none;
+	opacity: 0.7;
+	border-bottom: 1px solid rgba(55, 53, 47, 0.18);
+}
+
+table,
+th,
+td {
+	border: 1px solid rgba(55, 53, 47, 0.09);
+	border-collapse: collapse;
+}
+
+table {
+	border-left: none;
+	border-right: none;
+}
+
+th,
+td {
+	font-weight: normal;
+	padding: 0.25em 0.5em;
+	line-height: 1.5;
+	min-height: 1.5em;
+	text-align: left;
+}
+
+th {
+	color: rgba(55, 53, 47, 0.6);
+}
+
+ol,
+ul {
+	margin: 0;
+	margin-block-start: 0.6em;
+	margin-block-end: 0.6em;
+}
+
+li > ol:first-child,
+li > ul:first-child {
+	margin-block-start: 0.6em;
+}
+
+ul > li {
+	list-style: disc;
+}
+
+ul.to-do-list {
+	text-indent: -1.7em;
+}
+
+ul.to-do-list > li {
+	list-style: none;
+}
+
+.to-do-children-checked {
+	text-decoration: line-through;
+	opacity: 0.375;
+}
+
+ul.toggle > li {
+	list-style: none;
+}
+
+ul {
+	padding-inline-start: 1.7em;
+}
+
+ul > li {
+	padding-left: 0.1em;
+}
+
+ol {
+	padding-inline-start: 1.6em;
+}
+
+ol > li {
+	padding-left: 0.2em;
+}
+
+.mono ol {
+	padding-inline-start: 2em;
+}
+
+.mono ol > li {
+	text-indent: -0.4em;
+}
+
+.toggle {
+	padding-inline-start: 0em;
+	list-style-type: none;
+}
+
+/* Indent toggle children */
+.toggle > li > details {
+	padding-left: 1.7em;
+}
+
+.toggle > li > details > summary {
+	margin-left: -1.1em;
+}
+
+.selected-value {
+	display: inline-block;
+	padding: 0 0.5em;
+	background: rgba(206, 205, 202, 0.5);
+	border-radius: 3px;
+	margin-right: 0.5em;
+	margin-top: 0.3em;
+	margin-bottom: 0.3em;
+	white-space: nowrap;
+}
+
+.collection-title {
+	display: inline-block;
+	margin-right: 1em;
+}
+
+.simple-table {
+	margin-top: 1em;
+	font-size: 0.875rem;
+	empty-cells: show;
+}
+.simple-table td {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table th {
+	height: 29px;
+	min-width: 120px;
+}
+
+.simple-table-header-color {
+	background: rgb(247, 246, 243);
+	color: black;
+}
+.simple-table-header {
+	font-weight: 500;
+}
+
+time {
+	opacity: 0.5;
+}
+
+.icon {
+	display: inline-block;
+	max-width: 1.2em;
+	max-height: 1.2em;
+	text-decoration: none;
+	vertical-align: text-bottom;
+	margin-right: 0.5em;
+}
+
+img.icon {
+	border-radius: 3px;
+}
+
+.user-icon {
+	width: 1.5em;
+	height: 1.5em;
+	border-radius: 100%;
+	margin-right: 0.5rem;
+}
+
+.user-icon-inner {
+	font-size: 0.8em;
+}
+
+.text-icon {
+	border: 1px solid #000;
+	text-align: center;
+}
+
+.page-cover-image {
+	display: block;
+	object-fit: cover;
+	width: 100%;
+	max-height: 30vh;
+}
+
+.page-header-icon {
+	font-size: 3rem;
+	margin-bottom: 1rem;
+}
+
+.page-header-icon-with-cover {
+	margin-top: -0.72em;
+	margin-left: 0.07em;
+}
+
+.page-header-icon img {
+	border-radius: 3px;
+}
+
+.link-to-page {
+	margin: 1em 0;
+	padding: 0;
+	border: none;
+	font-weight: 500;
+}
+
+p > .user {
+	opacity: 0.5;
+}
+
+td > .user,
+td > time {
+	white-space: nowrap;
+}
+
+input[type="checkbox"] {
+	transform: scale(1.5);
+	margin-right: 0.6em;
+	vertical-align: middle;
+}
+
+p {
+	margin-top: 0.5em;
+	margin-bottom: 0.5em;
+}
+
+.image {
+	border: none;
+	margin: 1.5em 0;
+	padding: 0;
+	border-radius: 0;
+	text-align: center;
+}
+
+.code,
+code {
+	background: rgba(135, 131, 120, 0.15);
+	border-radius: 3px;
+	padding: 0.2em 0.4em;
+	border-radius: 3px;
+	font-size: 85%;
+	tab-size: 2;
+}
+
+code {
+	color: #eb5757;
+}
+
+.code {
+	padding: 1.5em 1em;
+}
+
+.code-wrap {
+	white-space: pre-wrap;
+	word-break: break-all;
+}
+
+.code > code {
+	background: none;
+	padding: 0;
+	font-size: 100%;
+	color: inherit;
+}
+
+blockquote {
+	font-size: 1.25em;
+	margin: 1em 0;
+	padding-left: 1em;
+	border-left: 3px solid rgb(55, 53, 47);
+}
+
+.bookmark {
+	text-decoration: none;
+	max-height: 8em;
+	padding: 0;
+	display: flex;
+	width: 100%;
+	align-items: stretch;
+}
+
+.bookmark-title {
+	font-size: 0.85em;
+	overflow: hidden;
+	text-overflow: ellipsis;
+	height: 1.75em;
+	white-space: nowrap;
+}
+
+.bookmark-text {
+	display: flex;
+	flex-direction: column;
+}
+
+.bookmark-info {
+	flex: 4 1 180px;
+	padding: 12px 14px 14px;
+	display: flex;
+	flex-direction: column;
+	justify-content: space-between;
+}
+
+.bookmark-image {
+	width: 33%;
+	flex: 1 1 180px;
+	display: block;
+	position: relative;
+	object-fit: cover;
+	border-radius: 1px;
+}
+
+.bookmark-description {
+	color: rgba(55, 53, 47, 0.6);
+	font-size: 0.75em;
+	overflow: hidden;
+	max-height: 4.5em;
+	word-break: break-word;
+}
+
+.bookmark-href {
+	font-size: 0.75em;
+	margin-top: 0.25em;
+}
+
+.sans { font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol"; }
+.code { font-family: "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace; }
+.serif { font-family: Lyon-Text, Georgia, ui-serif, serif; }
+.mono { font-family: iawriter-mono, Nitti, Menlo, Courier, monospace; }
+.pdf .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK JP'; }
+.pdf:lang(zh-CN) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK SC'; }
+.pdf:lang(zh-TW) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK TC'; }
+.pdf:lang(ko-KR) .sans { font-family: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", Helvetica, "Apple Color Emoji", Arial, sans-serif, "Segoe UI Emoji", "Segoe UI Symbol", 'Twemoji', 'Noto Color Emoji', 'Noto Sans CJK KR'; }
+.pdf .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .code { font-family: Source Code Pro, "SFMono-Regular", Menlo, Consolas, "PT Mono", "Liberation Mono", Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.pdf .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK JP'; }
+.pdf:lang(zh-CN) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK SC'; }
+.pdf:lang(zh-TW) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK TC'; }
+.pdf:lang(ko-KR) .serif { font-family: PT Serif, Lyon-Text, Georgia, ui-serif, serif, 'Twemoji', 'Noto Color Emoji', 'Noto Serif CJK KR'; }
+.pdf .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK JP'; }
+.pdf:lang(zh-CN) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK SC'; }
+.pdf:lang(zh-TW) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK TC'; }
+.pdf:lang(ko-KR) .mono { font-family: PT Mono, iawriter-mono, Nitti, Menlo, Courier, monospace, 'Twemoji', 'Noto Color Emoji', 'Noto Sans Mono CJK KR'; }
+.highlight-default {
+	color: rgba(55, 53, 47, 1);
+}
+.highlight-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.highlight-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.highlight-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.highlight-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.highlight-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.highlight-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.highlight-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.highlight-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.highlight-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.highlight-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.highlight-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.highlight-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.highlight-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.highlight-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.highlight-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.highlight-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.highlight-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.highlight-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.block-color-default {
+	color: inherit;
+	fill: inherit;
+}
+.block-color-gray {
+	color: rgba(120, 119, 116, 1);
+	fill: rgba(120, 119, 116, 1);
+}
+.block-color-brown {
+	color: rgba(159, 107, 83, 1);
+	fill: rgba(159, 107, 83, 1);
+}
+.block-color-orange {
+	color: rgba(217, 115, 13, 1);
+	fill: rgba(217, 115, 13, 1);
+}
+.block-color-yellow {
+	color: rgba(203, 145, 47, 1);
+	fill: rgba(203, 145, 47, 1);
+}
+.block-color-teal {
+	color: rgba(68, 131, 97, 1);
+	fill: rgba(68, 131, 97, 1);
+}
+.block-color-blue {
+	color: rgba(51, 126, 169, 1);
+	fill: rgba(51, 126, 169, 1);
+}
+.block-color-purple {
+	color: rgba(144, 101, 176, 1);
+	fill: rgba(144, 101, 176, 1);
+}
+.block-color-pink {
+	color: rgba(193, 76, 138, 1);
+	fill: rgba(193, 76, 138, 1);
+}
+.block-color-red {
+	color: rgba(212, 76, 71, 1);
+	fill: rgba(212, 76, 71, 1);
+}
+.block-color-gray_background {
+	background: rgba(241, 241, 239, 1);
+}
+.block-color-brown_background {
+	background: rgba(244, 238, 238, 1);
+}
+.block-color-orange_background {
+	background: rgba(251, 236, 221, 1);
+}
+.block-color-yellow_background {
+	background: rgba(251, 243, 219, 1);
+}
+.block-color-teal_background {
+	background: rgba(237, 243, 236, 1);
+}
+.block-color-blue_background {
+	background: rgba(231, 243, 248, 1);
+}
+.block-color-purple_background {
+	background: rgba(244, 240, 247, 0.8);
+}
+.block-color-pink_background {
+	background: rgba(249, 238, 243, 0.8);
+}
+.block-color-red_background {
+	background: rgba(253, 235, 236, 1);
+}
+.select-value-color-pink { background-color: rgba(245, 224, 233, 1); }
+.select-value-color-purple { background-color: rgba(232, 222, 238, 1); }
+.select-value-color-green { background-color: rgba(219, 237, 219, 1); }
+.select-value-color-gray { background-color: rgba(227, 226, 224, 1); }
+.select-value-color-opaquegray { background-color: rgba(255, 255, 255, 0.0375); }
+.select-value-color-orange { background-color: rgba(250, 222, 201, 1); }
+.select-value-color-brown { background-color: rgba(238, 224, 218, 1); }
+.select-value-color-red { background-color: rgba(255, 226, 221, 1); }
+.select-value-color-yellow { background-color: rgba(253, 236, 200, 1); }
+.select-value-color-blue { background-color: rgba(211, 229, 239, 1); }
+
+.checkbox {
+	display: inline-flex;
+	vertical-align: text-bottom;
+	width: 16;
+	height: 16;
+	background-size: 16px;
+	margin-left: 2px;
+	margin-right: 5px;
+}
+
+.checkbox-on {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20width%3D%2216%22%20height%3D%2216%22%20fill%3D%22%2358A9D7%22%2F%3E%0A%3Cpath%20d%3D%22M6.71429%2012.2852L14%204.9995L12.7143%203.71436L6.71429%209.71378L3.28571%206.2831L2%207.57092L6.71429%2012.2852Z%22%20fill%3D%22white%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+
+.checkbox-off {
+	background-image: url("data:image/svg+xml;charset=UTF-8,%3Csvg%20width%3D%2216%22%20height%3D%2216%22%20viewBox%3D%220%200%2016%2016%22%20fill%3D%22none%22%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%3E%0A%3Crect%20x%3D%220.75%22%20y%3D%220.75%22%20width%3D%2214.5%22%20height%3D%2214.5%22%20fill%3D%22white%22%20stroke%3D%22%2336352F%22%20stroke-width%3D%221.5%22%2F%3E%0A%3C%2Fsvg%3E");
+}
+	
+</style></head><body><article id="4e5c7096-f8b7-4800-9231-41148cd709ee" class="page sans"><header><img class="page-cover-image" src="https://images.unsplash.com/photo-1600074169098-16a54d791d0d?ixlib=rb-1.2.1&amp;q=85&amp;fm=jpg&amp;crop=entropy&amp;cs=srgb" style="object-position:center 50%"/><div class="page-header-icon page-header-icon-with-cover"><span class="icon">👨🏻‍💻</span></div><h1 class="page-title">Developer Guide</h1></header><div class="page-body"><p id="29a82658-8db4-4224-80e7-afbf281db306" class="">In this page we&#x27;ll cover Maven&#x27;s translation framework from a developer prespective. First we&#x27;ll go over the architecture, as it&#x27;s useful to know how it all works in case something goes wrong. And secondly, we&#x27;ll walk you to 2 examples on how to internationlize a few pages on both Ruby and React land.</p><h2 id="c1ea4d64-ff4b-4787-86d4-6e8039d15bd4" class="">Architecture</h2><p id="031f542c-86f9-46b7-a543-c57ea5ccd6e2" class="">As mentioned before, we use a service called Lokalise that serves as both the source of truth of translations, as well as the place where the translating work happens. Then the obvious question is: how do translations reach our app?</p><p id="74c28a3a-1c34-49c9-9b69-743d99a310a0" class="">Every hour, all translations from Lokalise get published to an Amazon S3 bucket named <code>sellwithami-i18n</code>. Each language has their own S3 object under the <code>locale</code> prefix (directory) which is a JSON file of all key-value translations pairs. It looks like this:</p><pre id="5d18880f-330d-432a-afa7-ba6d6454b1fb" class="code"><code>// locale/en.json
+{
+  &quot;a.translation.key&quot;: &quot;This is the English translation&quot;
+}</code></pre><p id="53fd03cb-ca74-45cd-983c-856ca8c847eb" class="">Parallely, every hour the Maven Rails application pull translations from the S3 bucket and upserts each pair as row in the <code>translations</code> table on the database. These translations can then be accessed in the appliation code through the <code>Maven::I18n.t</code> and <code>I18n.t</code> methods, which read from the database through the <code>Translation</code> model. All translations are cached in-memory meaning that translations &quot;updates&quot; only get refreshed after the Rails servers reboot (which happens once daily).</p><p id="886eead7-297c-4bb6-b056-3132afd5afbb" class="">With the above helpers, lokalise-sourced translations are accessible anywhere we use Ruby code in the Maven app. However, React components or other JS sprinkles don&#x27;t have access to these helpers to translate strings. It might be possible in some cases to pass already translated text to React component, but when the logic is much more complex, this approach sounds unfeasible. That&#x27;s why Maven also pulls translations key/value pairs client-side, directly from the S3 bucket.</p><p id="1399916b-5cf9-4a8b-b046-01a72f5fff9a" class="">The first time a user visits our seller app, translations will be automatically loaded asynchonously from the browser and saved to localstorage. Then, React components or JS code can use translations through a few helper methods. And just like with the Ruby-side, the localstorage &quot;cache&quot; gets cleared daily, to allow for new translation to be downloaded.</p><h2 id="a48d2aac-1f62-4e54-8d8f-1a53e54be44b" class="">💎 Ruby Internationalization</h2><p id="448d1b67-6d1b-4103-a209-2a97b6a45e60" class="">Ruby on Rails has support out-of-the-box for internationlization. The official Rails guide has a <a href="https://guides.rubyonrails.org/i18n.html">dedidacted page</a> to it, and we recommend you read it to familiarze yourself with the topic.</p><p id="05164bb7-c1bc-4c5c-b227-bd046a915eeb" class="">However, in most cases, you won&#x27;t use Rails helpers directly (<code>localization</code> helpers are the exception). Instead, we have a tiny wrapper layer <code>Maven::I18n.translate</code> and the <code>mt</code> view helper that should be used in most cases where translations are needed. These methods have full API compatibility with Rails&#x27; <code>I18n.translate</code> and <code>t</code> view helper respective. The main difference is that our wrapper will use genderized translations if available, and potentially will have some other syntatic sugars down the road.</p><p id="1802be29-9e06-4b30-b996-2c16c55d8d81" class="">In pages/views/templates/controllers, you should not use <code>Maven::I18n.t</code>, but instead you should use the <code>mt</code> helper because it&#x27;s more error friendly (ie. doesn&#x27;t raise exceptions), it humanizes the last suffix of a key when it is missing (ex. <code>path.welcome_back</code> get&#x27;s humanized to <code>Welcome Back</code> if no such key is found in the DB), and support html escaping if the key ends in the <code>_html</code> suffix.</p><p id="e12555ec-9d8a-4196-a569-6854aa006564" class="">Now let&#x27;s go through a the flow of translating a page that doesn&#x27;t use the internationalization helpers.</p><p id="5a0012ba-fe69-45b5-818e-3c6c5c1666f0" class="">Let&#x27;s say you have a template and page that look like this:</p><pre id="55da7d62-39ab-459e-bd4c-c8900b150c25" class="code"><code># app/views/seller/landing/show.slim
+section
+	div class=&quot;hero&quot;
+		h1 class=&quot;title&quot; Welcome to AMI! # [1]
+		h2 class=&quot;subtitle&quot; = page.subtitle
+
+# app/pages/seller/landing/show.rb
+class Landing::ShowPage &lt; ::Page
+  let(:subtitle) do
+    if current_user.new_user?
+      &quot;We are so excited to have you here&quot; # [2]
+    else
+      &quot;We are glad to see you again! See recent #{link_to(&#x27;updates&#x27; updates_path)}&quot; # [3]
+		end
+  end
+end</code></pre><p id="16b8836c-793f-4fd2-807f-1a74dd2f4546" class="">The first step is to add such all English string literals as key/value pairs to Lokalise and our development database.</p><pre id="9a8bbf10-0b6b-4bf9-a0c2-1ba2aee0b060" class="code"><code>bin/rails lokalise:add &quot;seller.landing.title&quot; &quot;Welcome to AMI!&quot; # [1]
+bin/rails lokalise:add &quot;seller.landing.subtitle.new_user&quot; &quot;We are so excited to have you here&quot; # [2]
+bin/rails lokalise:add &quot;seller.landing.subtitle.default_html&quot; &quot;We are glad to see you again! See recent %{updates_link}&quot; # [3]</code></pre><p id="7d7dca0f-7854-4b6d-981b-659c00f6393d" class="">Then we can replace the English literals with Maven&#x27;s I18n helper.</p><pre id="f5ced434-f443-4673-b1cc-34a57a580c35" class="code"><code># app/views/seller/landing/show.slim
+section
+	div class=&quot;hero&quot;
+		h1 class=&quot;title&quot; = mt(&#x27;seller.landing.title&#x27;) # [1]
+		h2 class=&quot;subtitle&quot; = page.subtitle
+ 
+# app/pages/seller/landing/show.rb
+class Landing::ShowPage &lt; ::Page
+  let(:subtitle) do
+    if current_user.new_user?
+      mt(&#x27;seller.landing.subtitle.new_user&#x27;) # [2]
+    else
+      mt(&#x27;seller.landing.subtitle.default_html&#x27;,
+        updates_link: link_to(&#x27;updates&#x27;, updates_path)) # [3]
+		end
+  end
+end</code></pre><p id="30968576-2874-4090-ba81-28da5db621df" class="">Verify the page renders properly with the intended strings. If any issues arise, verify the underlying database records exist locally (using rails console).</p><h2 id="3556c14d-2f1d-4baf-87f9-0b350b3df405" class="">👾 React Internationalization</h2><p id="ed43248a-694b-42bf-9821-91a5aa983ab0" class="">To do client-side translation (i.e. React), we use a library called <a href="https://www.i18next.com/">I18next</a>, but similarly to the ruby version, we wrap it with out own function to support genderization and be more consistent Ruby&#x27;s pluralization. The 2 main methods you should use are <code>withTranslation</code> and <code>useTranslation</code>. Now let&#x27;s go over a few React examples.</p><p id="12cb10a9-3d97-4f6a-88f8-9c6b91e40711" class="">Let&#x27;s say you have the following components:</p><pre id="4076742a-e6d2-473b-9982-c4cf9bf8a79a" class="code"><code>// app/javascripts/landing/shared.jsx
+import React from &#x27;react&#x27;
+import routes from &#x27;maven/routes&#x27;
+
+export default function Subtitle({newUser}) {
+  if (newUser) {
+    return &lt;h2 className=&quot;subtitle&quot;&gt;We are so excited to have you here&lt;/h2&gt; // [2]
+  }
+  return (
+    &lt;h2 className=&quot;subtitle&quot;&gt;
+      We are glad to see you again! See recent
+      &lt;a href=&quot;{routes.updatesPath}&quot;&gt;updates&lt;/a&gt;
+    &lt;/h2&gt; // [3]
+  )
+}
+
+// app/javascripts/landing/welcome_fn.jsx
+import React from &#x27;react&#x27;
+import subtitle from &#x27;../shared&#x27;
+
+export default function WelcomeComponent(props) {
+  return (
+  &lt;section&gt;
+    &lt;div className=&quot;hero&quot;&gt;
+			&lt;h1 className=&quot;title&quot;&gt;Welcome to AMI!&lt;/h1&gt; // [1]
+			&lt;Subtitle newUser={props.newUser} /&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+  )
+}
+
+// app/javascripts/landing/welcome_class.jsx
+import React from &#x27;react&#x27;
+import subtitle from &#x27;../shared&#x27;
+
+class WelcomeComponent extends React.Component {
+	render() {
+		return (
+	    &lt;section&gt;
+		    &lt;div className=&quot;hero&quot;&gt;
+					&lt;h1 className=&quot;title&quot;&gt;Welcome to AMI!&lt;/h1&gt; // [1]
+	        &lt;Subtitle newUser={props.newUser} /&gt;
+		    &lt;/div&gt;
+	    &lt;/section&gt;
+    )
+	}
+}</code></pre><p id="ef0cf02a-9367-41b5-88ec-5b992ccac314" class="">Like in the Ruby example, the first step is to add the key/value pairs to Lokalise and local db if they don&#x27;t exist.</p><pre id="4854aba0-d5ea-4c32-b80c-7e1d67e495d5" class="code"><code>bin/rails lokalise:add &quot;seller.landing.title&quot; &quot;Welcome to AMI!&quot; # [1]
+bin/rails lokalise:add &quot;seller.landing.subtitle.new_user&quot; &quot;We are so excited to have you here&quot; # [2]
+bin/rails lokalise:add &quot;seller.landing.subtitle.default_html&quot; &quot;We are glad to see you again! See recent %{updates_link}&quot; # [3]</code></pre><p id="6fccaf43-04fd-4cca-b799-636410384c95" class="">And now replace the components with the following.</p><pre id="ab3903f5-8255-468e-b012-8865e22417b3" class="code"><code>// app/javascripts/landing/shared.jsx
+import React from &#x27;react&#x27;
+import routes from &#x27;maven/routes&#x27;
+import { useTranslation } from &#x27;maven/i18n&#x27;
+
+export default function Subtitle({newUser}) {
+  const [t, _] = useTranslation()
+ 
+  if (newUser) {
+    return &lt;h2 class=&quot;subtitle&quot;&gt;{t(&#x27;seller.landing.subtitle.new_user&#x27;)}&lt;/h2&gt; // [2]
+  }
+  return (
+    &lt;h2 class=&quot;subtitle&quot;
+     dangerouslySetInnerHTML={{__html:
+       t(&#x27;seller.landing.subtitle.default_html&#x27;, {
+        updates_link: &#x27;&lt;a href... &gt;&lt;/a&gt;&#x27;,
+        interpolation: {escapeValue: false}
+       })
+    }} /&gt;
+  )
+}
+
+// app/javascripts/landing/welcome_fn.jsx
+import React from &#x27;react&#x27;
+import subtitle from &#x27;../shared&#x27;
+import { useTranslation } from &#x27;maven/i18n&#x27;
+
+export default function WelcomeComponent(props) {
+  const [t, _] = useTranslation()
+ 
+  return (
+  &lt;section&gt;
+    &lt;div class=&quot;hero&quot;&gt;
+			&lt;h1 class=&quot;title&quot;&gt;{t(&#x27;seller.landing.title&#x27;)}&lt;/h1&gt; // [1]
+			&lt;Subtitle newUser={props.newUser} /&gt;
+    &lt;/div&gt;
+  &lt;/section&gt;
+  )
+}
+
+// app/javascripts/landing/welcome_class.jsx
+import React from &#x27;react&#x27;
+import subtitle from &#x27;../shared&#x27;
+import { withTranslation } from &#x27;maven/i18n&#x27;
+
+class WelcomeComponent extends React.Component {
+	render() {
+		return (
+	    &lt;section&gt;
+		    &lt;div class=&quot;hero&quot;&gt;
+					&lt;h1 class=&quot;title&quot;&gt;{this.props.t(&#x27;seller.landing.title&#x27;)}&lt;/h1&gt; // [1]
+					&lt;Subtitle newUser={props.newUser} /&gt;
+		    &lt;/div&gt;
+	    &lt;/section&gt;
+    )
+	}
+}
+
+export default withTranslation()(WelcomeComponent)</code></pre><p id="8240a5ae-42fb-4512-a749-69aefef0ba9c" class="">Verify the page renders properly with the intended strings. If any issues arise, verify the translation exists in the lokalise S3 bucket. If missing, update the bucket and be sure to clear localstorage (used for caching).</p></div></article></body></html>
