@@ -1,0 +1,282 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Taekwondo Korean Cheat Sheet</title>
+<style>
+  @import url('https://fonts.googleapis.com/css2?family=Noto+Serif+KR:wght@400;700&family=IBM+Plex+Mono:wght@400;600&family=Bebas+Neue&display=swap');
+
+:root {
+  --red: #C0392B;
+  --dark: #0D0D0D;
+  --mid: #1A1A1A;
+  --panel: #111111;
+  --border: #2A2A2A;
+  --text: #E8E8E0;
+  --muted: #777;
+  --accent: #E8C547;
+}
+
+* { box-sizing: border-box; margin: 0; padding: 0; }
+
+body {
+  background: var(--dark);
+  color: var(--text);
+  font-family: 'IBM Plex Mono', monospace;
+  padding: 2rem;
+  min-height: 100vh;
+}
+
+header {
+  border-left: 5px solid var(--red);
+  padding-left: 1.2rem;
+  margin-bottom: 2.5rem;
+}
+
+header h1 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 3.5rem;
+  letter-spacing: 0.08em;
+  line-height: 1;
+  color: var(--text);
+}
+
+header p {
+  font-size: 0.7rem;
+  color: var(--muted);
+  letter-spacing: 0.15em;
+  text-transform: uppercase;
+  margin-top: 0.4rem;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 1.5rem;
+}
+
+.card {
+  background: var(--panel);
+  border: 1px solid var(--border);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.card-header {
+  background: var(--mid);
+  padding: 0.6rem 1rem;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+
+.card-header .dot {
+  width: 8px; height: 8px;
+  border-radius: 50%;
+  background: var(--red);
+  flex-shrink: 0;
+}
+
+.card-header h2 {
+  font-family: 'Bebas Neue', sans-serif;
+  font-size: 1rem;
+  letter-spacing: 0.15em;
+  color: var(--accent);
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+tr {
+  border-bottom: 1px solid var(--border);
+}
+
+tr:last-child { border-bottom: none; }
+
+tr:hover td { background: #161616; }
+
+td {
+  padding: 0.55rem 1rem;
+  font-size: 0.78rem;
+  vertical-align: middle;
+}
+
+td:first-child {
+  color: var(--muted);
+  width: 38%;
+  font-size: 0.72rem;
+}
+
+td:nth-child(2) {
+  color: var(--text);
+  font-weight: 600;
+}
+
+td:last-child {
+  font-family: 'Noto Serif KR', serif;
+  color: var(--red);
+  font-size: 0.9rem;
+  text-align: right;
+}
+
+.note {
+  font-size: 0.65rem;
+  color: var(--muted);
+  margin-top: 0.5rem;
+  padding: 0 1rem 0.8rem;
+  line-height: 1.6;
+  font-style: italic;
+}
+
+footer {
+  margin-top: 2.5rem;
+  font-size: 0.65rem;
+  color: var(--muted);
+  text-align: center;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+}
+</style>
+</head>
+<body>
+
+<header>
+  <h1>태권도<br>Cheat Sheet</h1>
+  <p>Korean terms for the dojang</p>
+</header>
+
+<div class="grid">
+
+  <!-- NUMBERS -->
+  <div class="card">
+    <div class="card-header"><div class="dot"></div><h2>Numbers — Sino-Korean (forms &amp; belt)</h2></div>
+    <table>
+      <tr><td>1</td><td>Il</td><td>일</td></tr>
+      <tr><td>2</td><td>I</td><td>이</td></tr>
+      <tr><td>3</td><td>Sam</td><td>삼</td></tr>
+      <tr><td>4</td><td>Sa</td><td>사</td></tr>
+      <tr><td>5</td><td>O</td><td>오</td></tr>
+      <tr><td>6</td><td>Yuk</td><td>육</td></tr>
+      <tr><td>7</td><td>Chil</td><td>칠</td></tr>
+      <tr><td>8</td><td>Pal</td><td>팔</td></tr>
+      <tr><td>9</td><td>Gu</td><td>구</td></tr>
+      <tr><td>10</td><td>Ship</td><td>십</td></tr>
+    </table>
+    <p class="note">Native Korean numbers (hana, dul, set…) are used for counting reps in some dojangs — ask your instructor which system they use.</p>
+  </div>
+
+  <!-- NATIVE NUMBERS -->
+  <div class="card">
+    <div class="card-header"><div class="dot"></div><h2>Numbers — Native Korean (counting reps)</h2></div>
+    <table>
+      <tr><td>1</td><td>Hana</td><td>하나</td></tr>
+      <tr><td>2</td><td>Dul</td><td>둘</td></tr>
+      <tr><td>3</td><td>Set</td><td>셋</td></tr>
+      <tr><td>4</td><td>Net</td><td>넷</td></tr>
+      <tr><td>5</td><td>Dasut</td><td>다섯</td></tr>
+      <tr><td>6</td><td>Yusut</td><td>여섯</td></tr>
+      <tr><td>7</td><td>Ilgop</td><td>일곱</td></tr>
+      <tr><td>8</td><td>Yudol</td><td>여덟</td></tr>
+      <tr><td>9</td><td>Ahop</td><td>아홉</td></tr>
+      <tr><td>10</td><td>Yeol</td><td>열</td></tr>
+    </table>
+  </div>
+
+  <!-- RITUALS / COMMANDS -->
+  <div class="card">
+    <div class="card-header"><div class="dot"></div><h2>Rituals &amp; Commands</h2></div>
+    <table>
+      <tr><td>Attention</td><td>Charyeot</td><td>차렷</td></tr>
+      <tr><td>Bow</td><td>Gyeong-nye</td><td>경례</td></tr>
+      <tr><td>Ready stance</td><td>Joonbi</td><td>준비</td></tr>
+      <tr><td>Begin</td><td>Sijak</td><td>시작</td></tr>
+      <tr><td>Stop / Cease</td><td>Geuman</td><td>그만</td></tr>
+      <tr><td>Return to ready</td><td>Baro</td><td>바로</td></tr>
+      <tr><td>At ease / Rest</td><td>Swieo</td><td>쉬어</td></tr>
+      <tr><td>Turn around</td><td>Dwie-ro dora</td><td>뒤로 돌아</td></tr>
+      <tr><td>Yell / Spirit shout</td><td>Kihap</td><td>기합</td></tr>
+    </table>
+  </div>
+
+  <!-- COURTESY / ETIQUETTE -->
+  <div class="card">
+    <div class="card-header"><div class="dot"></div><h2>Courtesy &amp; Etiquette</h2></div>
+    <table>
+      <tr><td>Thank you</td><td>Gamsahamnida</td><td>감사합니다</td></tr>
+      <tr><td>Thank you (informal)</td><td>Gomawoyo</td><td>고마워요</td></tr>
+      <tr><td>Yes / I understand</td><td>Ye</td><td>예</td></tr>
+      <tr><td>No</td><td>Aniyo</td><td>아니요</td></tr>
+      <tr><td>Teacher / Instructor</td><td>Sabeomnim</td><td>사범님</td></tr>
+      <tr><td>Student</td><td>Haesaeng</td><td>학생</td></tr>
+      <tr><td>Senior student</td><td>Seonbae</td><td>선배</td></tr>
+      <tr><td>Training hall</td><td>Dojang</td><td>도장</td></tr>
+      <tr><td>Uniform</td><td>Dobok</td><td>도복</td></tr>
+    </table>
+    <p class="note">Always address your instructor as Sabeomnim, not by first name. Bow when entering and leaving the dojang.</p>
+  </div>
+
+  <!-- STANCES -->
+  <div class="card">
+    <div class="card-header"><div class="dot"></div><h2>Stances (Seogi)</h2></div>
+    <table>
+      <tr><td>Ready stance</td><td>Joonbi Seogi</td><td>준비서기</td></tr>
+      <tr><td>Walking stance</td><td>Ap Seogi</td><td>앞서기</td></tr>
+      <tr><td>Forward stance</td><td>Ap Gubi</td><td>앞굽이</td></tr>
+      <tr><td>Back stance</td><td>Dwit Gubi</td><td>뒷굽이</td></tr>
+      <tr><td>Horse stance</td><td>Juchum Seogi</td><td>주춤서기</td></tr>
+      <tr><td>Tiger stance</td><td>Beom Seogi</td><td>범서기</td></tr>
+      <tr><td>Crane stance</td><td>Hakdari Seogi</td><td>학다리서기</td></tr>
+    </table>
+  </div>
+
+  <!-- BASIC TECHNIQUES -->
+  <div class="card">
+    <div class="card-header"><div class="dot"></div><h2>Strikes &amp; Kicks (Chagi / Jirugi)</h2></div>
+    <table>
+      <tr><td>Punch</td><td>Jirugi</td><td>지르기</td></tr>
+      <tr><td>Front kick</td><td>Ap Chagi</td><td>앞차기</td></tr>
+      <tr><td>Roundhouse kick</td><td>Dollyo Chagi</td><td>돌려차기</td></tr>
+      <tr><td>Side kick</td><td>Yeop Chagi</td><td>옆차기</td></tr>
+      <tr><td>Back kick</td><td>Dwit Chagi</td><td>뒷차기</td></tr>
+      <tr><td>Axe kick</td><td>Naeryeo Chagi</td><td>내려차기</td></tr>
+      <tr><td>Spinning kick</td><td>Bandae Dollyo</td><td>반대돌려</td></tr>
+    </table>
+  </div>
+
+  <!-- BLOCKS -->
+  <div class="card">
+    <div class="card-header"><div class="dot"></div><h2>Blocks (Makki)</h2></div>
+    <table>
+      <tr><td>Low block</td><td>Arae Makki</td><td>아래막기</td></tr>
+      <tr><td>Middle block (inside)</td><td>Momtong An Makki</td><td>몸통안막기</td></tr>
+      <tr><td>Middle block (outside)</td><td>Momtong Bakkat Makki</td><td>몸통바깥막기</td></tr>
+      <tr><td>High block</td><td>Olgul Makki</td><td>얼굴막기</td></tr>
+      <tr><td>Knife-hand block</td><td>Sonnal Makki</td><td>손날막기</td></tr>
+    </table>
+  </div>
+
+  <!-- TARGET LEVELS -->
+  <div class="card">
+    <div class="card-header"><div class="dot"></div><h2>Target Levels &amp; Directions</h2></div>
+    <table>
+      <tr><td>High (head)</td><td>Olgul</td><td>얼굴</td></tr>
+      <tr><td>Middle (torso)</td><td>Momtong</td><td>몸통</td></tr>
+      <tr><td>Low (groin/leg)</td><td>Arae</td><td>아래</td></tr>
+      <tr><td>Front</td><td>Ap</td><td>앞</td></tr>
+      <tr><td>Back</td><td>Dwit</td><td>뒤</td></tr>
+      <tr><td>Side</td><td>Yeop</td><td>옆</td></tr>
+      <tr><td>Left</td><td>Wen</td><td>왼</td></tr>
+      <tr><td>Right</td><td>Oreun</td><td>오른</td></tr>
+    </table>
+  </div>
+
+</div>
+
+<footer>Taekwondo Korean Reference · Romanization follows common dojang pronunciation, not strict Revised Romanization</footer>
+
+</body>
+</html>
