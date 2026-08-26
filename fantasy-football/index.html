@@ -1,0 +1,235 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fantasy Football — Artifacts</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link
+    href="https://fonts.googleapis.com/css2?family=Teko:wght@500;600;700&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap"
+    rel="stylesheet">
+  <style>
+    :root {
+      --bg: #12150e;
+      --panel: #191d13;
+      --panel-2: #1f2417;
+      --line: #2c3222;
+      --turf: #3f5c33;
+      --turf-light: #7fa565;
+      --chalk: #eee8d8;
+      --dim: #9aa08c;
+      --dimmer: #5f6653;
+      --gold: #d1a44e;
+      --gold-dim: #8a6f39;
+      --rust: #a8483a;
+      --rust-dim: #5e2c25;
+      --qb: #c98a3a;
+      --rb: #5a9b6e;
+      --wr: #4f8fc4;
+      --te: #b06fb0;
+      --k: #9a9a6a;
+      --def: #8a7a9a;
+      --radius: 3px;
+    }
+
+    * {
+      box-sizing: border-box;
+    }
+
+    html,
+    body {
+      margin: 0;
+      padding: 0;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--chalk);
+      font-family: 'Inter', sans-serif;
+      min-height: 100vh;
+    }
+
+    ::selection {
+      background: var(--gold-dim);
+      color: var(--chalk);
+    }
+
+    ::-webkit-scrollbar {
+      width: 10px;
+      height: 10px;
+    }
+
+    ::-webkit-scrollbar-track {
+      background: var(--panel);
+    }
+
+    ::-webkit-scrollbar-thumb {
+      background: var(--line);
+      border-radius: 5px;
+    }
+
+    .mono {
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    .display {
+      font-family: 'Teko', sans-serif;
+      font-weight: 600;
+      letter-spacing: 0.01em;
+    }
+
+    header {
+      background: linear-gradient(180deg, #161a10, #12150e);
+      border-bottom: 2px solid var(--turf);
+      padding: 22px 24px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: baseline;
+      gap: 12px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    .brand .display {
+      font-size: 34px;
+      line-height: 1;
+      color: var(--chalk);
+      text-transform: uppercase;
+    }
+
+    .brand .sub {
+      font-size: 11px;
+      color: var(--dim);
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+    }
+
+    main {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 32px 24px 60px;
+    }
+
+    .section-label {
+      font-size: 11px;
+      text-transform: uppercase;
+      letter-spacing: 0.14em;
+      color: var(--dim);
+      margin: 0 0 14px;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-label::after {
+      content: '';
+      flex: 1;
+      height: 1px;
+      background: var(--line);
+    }
+
+    .grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+      gap: 16px;
+    }
+
+    .card {
+      display: block;
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-left: 3px solid var(--turf-light);
+      border-radius: var(--radius);
+      padding: 16px 18px;
+      text-decoration: none;
+      color: var(--chalk);
+      transition: border-color 0.15s ease, background 0.15s ease, transform 0.15s ease;
+    }
+
+    .card:hover {
+      background: var(--panel-2);
+      border-left-color: var(--gold);
+      transform: translateY(-1px);
+    }
+
+    .card .kind {
+      font-size: 10px;
+      text-transform: uppercase;
+      letter-spacing: 0.12em;
+      color: var(--gold);
+      margin-bottom: 8px;
+    }
+
+    .card .title {
+      font-family: 'Teko', sans-serif;
+      font-weight: 600;
+      font-size: 24px;
+      line-height: 1.1;
+      margin-bottom: 6px;
+    }
+
+    .card .desc {
+      font-size: 13px;
+      color: var(--dim);
+      line-height: 1.4;
+    }
+
+    .empty {
+      color: var(--dimmer);
+      font-size: 13px;
+      font-family: 'IBM Plex Mono', monospace;
+      padding: 20px 0;
+    }
+
+    footer {
+      max-width: 1000px;
+      margin: 0 auto;
+      padding: 0 24px 40px;
+      color: var(--dimmer);
+      font-size: 11px;
+      font-family: 'IBM Plex Mono', monospace;
+    }
+
+    footer a {
+      color: var(--dim);
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <div class="brand">
+      <span class="display">Fantasy Football</span>
+      <span class="sub">Draft Boards &amp; Artifacts</span>
+    </div>
+  </header>
+
+  <main>
+    <p class="section-label">2026 Season</p>
+    <div class="grid">
+      <a class="card" href="2026-yahoo-draft-board.html">
+        <div class="kind">Draft Board</div>
+        <div class="title">Yahoo Draft Board</div>
+        <div class="desc">Live draft board and cheat sheet for the 2026 Yahoo league.</div>
+      </a>
+      <a class="card" href="2026-sleeper-draft-board.html">
+        <div class="kind">Draft Board</div>
+        <div class="title">Sleeper Draft Board</div>
+        <div class="desc">Live draft board and cheat sheet for the 2026 "Totes Cray" Sleeper league.</div>
+      </a>
+    </div>
+  </main>
+
+  <footer>
+    &copy; <span id="year"></span> Phil Monroe
+  </footer>
+
+  <script>
+    document.getElementById('year').textContent = new Date().getFullYear();
+  </script>
+</body>
+
+</html>
