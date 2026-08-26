@@ -499,6 +499,39 @@
       accent-color: var(--turf-light);
     }
 
+    .proj-legend {
+      display: flex;
+      align-items: center;
+      gap: 18px;
+      flex-wrap: wrap;
+      font-size: 11.5px;
+      color: var(--dim);
+      margin-bottom: 12px;
+    }
+
+    .proj-legend .dot {
+      display: inline-block;
+      width: 9px;
+      height: 9px;
+      border-radius: 2px;
+      margin-right: 6px;
+      vertical-align: middle;
+    }
+
+    .proj-legend .dot.miss {
+      background: var(--rust);
+    }
+
+    .proj-legend .dot.likely {
+      background: var(--turf-light);
+    }
+
+    .proj-legend b {
+      color: var(--chalk);
+      font-family: 'IBM Plex Mono', monospace;
+      font-weight: 600;
+    }
+
     .board-head {
       display: grid;
       grid-template-columns: 44px 32px 1fr 60px 54px 54px 90px;
@@ -554,6 +587,40 @@
 
     .row.fell {
       box-shadow: inset 0 0 0 1px var(--gold-dim);
+    }
+
+    .row.miss {
+      background: rgba(168, 72, 58, 0.10);
+      border-left: 3px solid var(--rust);
+      padding-left: 9px;
+    }
+
+    .miss-badge {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9.5px;
+      color: #e0a49a;
+      background: rgba(168, 72, 58, 0.18);
+      border: 1px solid var(--rust);
+      border-radius: 2px;
+      padding: 1px 5px;
+      margin-left: 8px;
+    }
+
+    .row.likely {
+      background: rgba(127, 165, 101, 0.14);
+      border-left: 3px solid var(--turf-light);
+      padding-left: 9px;
+    }
+
+    .likely-badge {
+      font-family: 'IBM Plex Mono', monospace;
+      font-size: 9.5px;
+      color: var(--turf-light);
+      background: rgba(127, 165, 101, 0.18);
+      border: 1px solid var(--turf-light);
+      border-radius: 2px;
+      padding: 1px 5px;
+      margin-left: 8px;
     }
 
     .rk {
@@ -744,6 +811,8 @@
         <label class="toggle-wrap"><input type="checkbox" id="hideDrafted"> Hide drafted</label>
         <label class="toggle-wrap"><input type="checkbox" id="starredOnly"> Queue only</label>
       </div>
+
+      <div class="proj-legend" id="projLegend"></div>
 
       <div class="board-head">
         <span>ADP</span><span>Pos</span><span>Player</span><span>Pos Rk</span><span>Bye</span><span></span><span></span>
@@ -966,6 +1035,34 @@
       });
     }
 
+    // Projects which of the best available players will likely be gone by your next
+    // pick (top N by rank, where N = picks happening before your turn comes back around),
+    // and which player is most likely to still be there when it's your turn.
+    function computeProjection() {
+      const pick = currentOverallPick();
+      const missCount = Math.max(0, nextMyPick() - pick);
+      const available = PLAYERS.filter(p => !state.status[p.id]).sort((a, b) => a.rank - b.rank);
+      const missIds = new Set(available.slice(0, missCount).map(p => p.id));
+      const likely = available[missCount] || null;
+      return { missCount, missIds, likely };
+    }
+
+    function renderProjectionLegend() {
+      const proj = computeProjection();
+      const el = document.getElementById("projLegend");
+      el.innerHTML = "";
+      if (proj.missCount > 0) {
+        const span = document.createElement("span");
+        span.innerHTML = `<span class="dot miss"></span>Next <b>${proj.missCount}</b> pick${proj.missCount === 1 ? "" : "s"} projected to go to other teams`;
+        el.appendChild(span);
+      }
+      if (proj.likely) {
+        const span = document.createElement("span");
+        span.innerHTML = `<span class="dot likely"></span>Likely there for you: <b>${proj.likely.name}</b> <span style="color:var(--dim);">(${proj.likely.posRank})</span>`;
+        el.appendChild(span);
+      }
+    }
+
     function renderValueAlerts() {
       const pick = currentOverallPick();
       const threshold = 6; // fell at least this many picks past ADP
@@ -990,6 +1087,7 @@
     function renderBoard() {
       const term = searchTerm.trim().toLowerCase();
       const pick = currentOverallPick();
+      const proj = computeProjection();
       let list = PLAYERS.filter(p => {
         if (activeFilter !== "ALL" && p.pos !== activeFilter) return false;
         if (term && !(p.name.toLowerCase().includes(term) || p.team.toLowerCase().includes(term))) return false;
@@ -1007,11 +1105,15 @@
         row.className = "row" + (st === "mine" ? " mine" : st === "theirs" ? " theirs" : "");
         const fell = !st && (pick - p.rank) >= 6;
         if (fell) row.classList.add("fell");
+        const isMiss = !st && proj.missIds.has(p.id);
+        const isLikely = !st && proj.likely && proj.likely.id === p.id;
+        if (isMiss) row.classList.add("miss");
+        if (isLikely) row.classList.add("likely");
 
         row.innerHTML = `
       <span class="rk">${p.rank}</span>
       <span class="postag ${p.pos}">${p.pos}</span>
-      <span class="pname">${p.name}<span class="team">${p.team}</span>${fell ? `<span class="fell-badge">FELL ${pick - p.rank}</span>` : ""}</span>
+      <span class="pname">${p.name}<span class="team">${p.team}</span>${fell ? `<span class="fell-badge">FELL ${pick - p.rank}</span>` : ""}${isMiss ? `<span class="miss-badge">LIKELY GONE</span>` : ""}${isLikely ? `<span class="likely-badge">YOUR PICK?</span>` : ""}</span>
       <span class="posrk">${p.posRank}</span>
       <span class="bye">${p.bye}</span>
       <span></span>
@@ -1071,6 +1173,7 @@
       renderRoster();
       renderQueue();
       renderValueAlerts();
+      renderProjectionLegend();
       renderBoard();
     }
 
@@ -1115,6 +1218,8 @@
       state.draftSlot = v;
       saveState();
       renderClock();
+      renderProjectionLegend();
+      renderBoard();
     });
 
     renderAll();
