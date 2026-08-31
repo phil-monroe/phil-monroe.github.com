@@ -1,0 +1,109 @@
+<!doctype html>
+<html>
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Confetti</title>
+  <style>
+    html, body {
+      margin: 0;
+      padding: 0;
+      width: 100%;
+      height: 100%;
+      overflow: hidden;
+      background: #111827;
+    }
+
+    canvas {
+      display: block;
+    }
+  </style>
+</head>
+
+<body>
+  <canvas id="confetti"></canvas>
+  <script>
+    const canvas = document.getElementById('confetti');
+    const ctx = canvas.getContext('2d');
+
+    const colors = ['#f94144', '#f3722c', '#f8961e', '#f9c74f', '#90be6d', '#43aa8b', '#577590', '#ef476f', '#ffd166', '#06d6a0'];
+    const gravity = 0.12;
+    const drag = 0.002;
+    const terminalVelocity = 4;
+
+    let width, height;
+    let pieces = [];
+
+    function resize() {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    }
+    window.addEventListener('resize', resize);
+    resize();
+
+    function randRange(min, max) {
+      return min + Math.random() * (max - min);
+    }
+
+    function makePiece(spawnAboveScreen) {
+      return {
+        x: randRange(0, width),
+        y: spawnAboveScreen ? randRange(-height, 0) : randRange(-40, -10),
+        w: randRange(6, 12),
+        h: randRange(8, 16),
+        color: colors[Math.floor(Math.random() * colors.length)],
+        vx: randRange(-1.5, 1.5),
+        vy: randRange(0, 2),
+        rotation: randRange(0, Math.PI * 2),
+        rotationSpeed: randRange(-0.2, 0.2),
+        wobble: randRange(0, Math.PI * 2),
+        wobbleSpeed: randRange(0.03, 0.08),
+        tilt: randRange(0.5, 1),
+      };
+    }
+
+    function initPieces() {
+      const count = Math.floor((width * height) / 9000);
+      pieces = Array.from({ length: count }, () => makePiece(true));
+    }
+    initPieces();
+    window.addEventListener('resize', initPieces);
+
+    function update(piece) {
+      piece.wobble += piece.wobbleSpeed;
+      piece.vy = Math.min(piece.vy + gravity - piece.vy * drag, terminalVelocity);
+      piece.x += piece.vx + Math.sin(piece.wobble) * 1.2;
+      piece.y += piece.vy;
+      piece.rotation += piece.rotationSpeed;
+
+      if (piece.y > height + 20) {
+        Object.assign(piece, makePiece(false));
+      }
+      if (piece.x < -20) piece.x = width + 20;
+      if (piece.x > width + 20) piece.x = -20;
+    }
+
+    function draw(piece) {
+      ctx.save();
+      ctx.translate(piece.x, piece.y);
+      ctx.rotate(piece.rotation);
+      ctx.scale(1, piece.tilt);
+      ctx.fillStyle = piece.color;
+      ctx.fillRect(-piece.w / 2, -piece.h / 2, piece.w, piece.h);
+      ctx.restore();
+    }
+
+    function frame() {
+      ctx.clearRect(0, 0, width, height);
+      for (const piece of pieces) {
+        update(piece);
+        draw(piece);
+      }
+      requestAnimationFrame(frame);
+    }
+    requestAnimationFrame(frame);
+  </script>
+</body>
+
+</html>
