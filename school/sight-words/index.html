@@ -120,76 +120,51 @@
     }
 
     .card {
+      position: relative;
       background: var(--card);
       border-radius: var(--radius);
       box-shadow: 0 6px 0 var(--line), 0 10px 24px rgba(43, 36, 64, 0.08);
-      padding: 36px 24px;
-      min-height: 300px;
+      padding: 40px 24px 32px;
+      min-height: 260px;
       display: flex;
       flex-direction: column;
       align-items: center;
       justify-content: center;
-      gap: 22px;
+      gap: 26px;
       text-align: center;
     }
 
     .speak-btn {
-      width: 96px;
-      height: 96px;
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      width: 46px;
+      height: 46px;
       border-radius: 50%;
       border: none;
       background: var(--purple);
       color: white;
-      font-size: 2.5rem;
+      font-size: 1.3rem;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      box-shadow: 0 5px 0 var(--purple-dark);
+      box-shadow: 0 3px 0 var(--purple-dark);
       transition: transform 0.06s ease;
     }
 
     .speak-btn:active {
-      transform: translateY(4px);
-      box-shadow: 0 1px 0 var(--purple-dark);
+      transform: translateY(3px);
+      box-shadow: 0 0 0 var(--purple-dark);
     }
 
-    .speak-hint {
-      color: var(--dim);
-      font-size: 0.9rem;
-      font-weight: 600;
-      margin-top: -8px;
-    }
-
-    .word-reveal {
-      font-size: 2.6rem;
+    .word-display {
+      font-size: 2.8rem;
       font-weight: 800;
-      letter-spacing: 0.12em;
+      letter-spacing: 0.06em;
       color: var(--purple-dark);
       min-height: 3.4rem;
       word-break: break-word;
-    }
-
-    .word-reveal.hidden-word {
-      visibility: hidden;
-    }
-
-    .show-btn {
-      font-family: inherit;
-      font-size: 1.15rem;
-      font-weight: 700;
-      color: white;
-      background: var(--ink);
-      border: none;
-      border-radius: 14px;
-      padding: 14px 28px;
-      cursor: pointer;
-      box-shadow: 0 5px 0 #17132a;
-    }
-
-    .show-btn:active {
-      transform: translateY(4px);
-      box-shadow: 0 1px 0 #17132a;
     }
 
     .judge-row {
@@ -285,7 +260,7 @@
 <body>
   <header>
     <h1>🐝 Sight Word Spelling</h1>
-    <p class="subtitle">Listen, spell it out loud, then check yourself.</p>
+    <p class="subtitle">Say the word, then mark how she did.</p>
   </header>
 
   <div class="week-picker" id="weekPicker" hidden>
@@ -307,16 +282,11 @@
       </div>
 
       <div class="card">
-        <div id="playCard">
-          <button class="speak-btn" id="speakBtn" aria-label="Say the word again">🔊</button>
-          <p class="speak-hint">Tap to hear the word again</p>
-        </div>
+        <button class="speak-btn" id="speakBtn" aria-label="Say the word again">🔊</button>
 
-        <div class="word-reveal hidden-word" id="wordReveal"></div>
+        <div class="word-display" id="wordDisplay"></div>
 
-        <button class="show-btn" id="showBtn">Show spelling</button>
-
-        <div class="judge-row" id="judgeRow" hidden>
+        <div class="judge-row">
           <button class="judge-btn miss" id="missBtn">✗ Missed it</button>
           <button class="judge-btn got" id="gotBtn">✓ Got it!</button>
         </div>
@@ -340,10 +310,8 @@
     const progressLabel = document.getElementById('progressLabel');
     const gotCountEl = document.getElementById('gotCount');
     const missCountEl = document.getElementById('missCount');
-    const wordReveal = document.getElementById('wordReveal');
+    const wordDisplay = document.getElementById('wordDisplay');
     const speakBtn = document.getElementById('speakBtn');
-    const showBtn = document.getElementById('showBtn');
-    const judgeRow = document.getElementById('judgeRow');
     const missBtn = document.getElementById('missBtn');
     const gotBtn = document.getElementById('gotBtn');
     const doneScreen = document.getElementById('doneScreen');
@@ -390,10 +358,7 @@
         return;
       }
       currentWord = roundQueue.shift();
-      wordReveal.textContent = currentWord;
-      wordReveal.classList.add('hidden-word');
-      showBtn.hidden = false;
-      judgeRow.hidden = true;
+      wordDisplay.textContent = currentWord;
       updateProgress();
       speak(currentWord);
     }
@@ -413,12 +378,6 @@
     }
 
     speakBtn.addEventListener('click', () => speak(currentWord));
-
-    showBtn.addEventListener('click', () => {
-      wordReveal.classList.remove('hidden-word');
-      showBtn.hidden = true;
-      judgeRow.hidden = false;
-    });
 
     gotBtn.addEventListener('click', () => {
       gotCount++;
