@@ -3,6 +3,14 @@
     {
       "label": "Week 1",
       "words": ["able", "above", "across", "again", "animal", "been", "both", "brother"]
+    },
+    {
+      "label": "Example: Week 2",
+      "words": ["build", "carry", "caught", "children", "cold", "does", "eight", "every"]
+    },
+    {
+      "label": "Example: Week 3",
+      "words": ["family", "father", "found", "great", "hold", "listen", "mother", "young"]
     }
   ]
 }
