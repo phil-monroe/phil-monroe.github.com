@@ -2,36 +2,51 @@
   "quarters": [
     {
       "label": "Quarter 1",
-      "words": [
-        "able", "above", "across", "again", "animal", "both", "brother",
-        "more", "much", "new", "next", "off", "only", "own",
-        "than", "today", "week", "well", "wish", "which",
-        "call", "catch", "doing", "done", "full", "gave", "give", "goes", "help", "kept", "lady", "live", "made",
-        "paper", "place", "please", "pull", "read", "room", "same", "sit", "sky", "shall", "sure", "take", "tell"
+      "weeks": [
+        { "label": "Week 1", "date": "2026-08-31", "words": ["able", "above", "across", "again", "animal", "both", "brother", "more"] },
+        { "label": "Week 2", "date": null, "words": ["much", "new", "next", "off", "only", "own", "than", "today"] },
+        { "label": "Week 3", "date": null, "words": ["week", "well", "wish", "which", "call", "catch", "doing", "done"] },
+        { "label": "Week 4", "date": null, "words": ["full", "gave", "give", "goes", "help", "kept", "lady", "live"] },
+        { "label": "Week 5", "date": null, "words": ["made", "paper", "place", "please", "pull", "read", "room", "same"] },
+        { "label": "Week 6", "date": null, "words": ["sit", "sky", "shall", "sure", "take", "tell"] }
       ]
     },
     {
       "label": "Quarter 2",
-      "words": [
-        "against", "almost", "always", "answer", "became", "began", "can't", "change", "children", "city", "different", "early", "eight", "every", "family", "finally", "great", "hour", "house", "inside", "know",
-        "large", "light", "maybe", "mind", "move", "need", "number", "once", "picture", "pretty", "right", "school", "second", "short", "sister", "sleep", "something", "stand", "state", "still", "stop",
-        "teacher", "them", "together", "took", "tree", "under", "use", "walk", "winter", "woke", "yard", "year"
+      "weeks": [
+        { "label": "Week 1", "date": null, "words": ["against", "almost", "always", "answer", "became", "began", "can't", "change"] },
+        { "label": "Week 2", "date": null, "words": ["children", "city", "different", "early", "eight", "every", "family", "finally"] },
+        { "label": "Week 3", "date": null, "words": ["great", "hour", "house", "inside", "know", "large", "light", "maybe"] },
+        { "label": "Week 4", "date": null, "words": ["mind", "move", "need", "number", "once", "picture", "pretty", "right"] },
+        { "label": "Week 5", "date": null, "words": ["school", "second", "short", "sister", "sleep", "something", "stand", "state"] },
+        { "label": "Week 6", "date": null, "words": ["still", "stop", "teacher", "them", "together", "took", "tree", "under"] },
+        { "label": "Week 7", "date": null, "words": ["use", "walk", "winter", "woke", "yard", "year"] }
       ]
     },
     {
       "label": "Quarter 3",
-      "words": [
-        "America", "away", "beautiful", "behind", "breakfast", "country", "cousin", "draw", "earth", "favorite", "father", "knew", "learn", "lose", "Monday", "mother", "myself", "never", "night", "ocean", "party", "perhaps",
-        "ready", "round", "sea", "shall", "since", "snow", "someone", "son", "soon", "space", "store", "street", "such", "summer", "teach", "their", "things", "think", "third", "thought", "throw", "told",
-        "tomorrow", "Tuesday", "turned", "until", "wanted", "wasn't", "watch", "week", "whole", "whose", "while", "without", "won", "world", "those"
+      "weeks": [
+        { "label": "Week 1", "date": null, "words": ["America", "away", "beautiful", "behind", "breakfast", "country", "cousin", "draw"] },
+        { "label": "Week 2", "date": null, "words": ["earth", "favorite", "father", "knew", "learn", "lose", "Monday", "mother"] },
+        { "label": "Week 3", "date": null, "words": ["myself", "never", "night", "ocean", "party", "perhaps", "ready", "round"] },
+        { "label": "Week 4", "date": null, "words": ["sea", "shall", "since", "snow", "someone", "son", "soon", "space"] },
+        { "label": "Week 5", "date": null, "words": ["store", "street", "such", "summer", "teach", "their", "things", "think"] },
+        { "label": "Week 6", "date": null, "words": ["third", "thought", "throw", "told", "tomorrow", "Tuesday", "turned", "until"] },
+        { "label": "Week 7", "date": null, "words": ["wanted", "wasn't", "watch", "week", "whole", "whose", "while", "without"] },
+        { "label": "Week 8", "date": null, "words": ["won", "world", "those"] }
       ]
     },
     {
       "label": "Quarter 4",
-      "words": [
-        "already", "although", "among", "August", "bought", "brought", "carry", "couple", "daughter", "December", "enough", "February", "instead", "January", "July", "laugh", "lunch", "mean", "might", "money", "often",
-        "other", "person", "piece", "possible", "probably", "really", "Saturday", "scared", "several", "seen", "shown", "simple", "size", "something", "sound", "special", "start", "stay", "stood", "story", "stuff",
-        "sure", "that's", "themselves", "these", "they're", "though", "thought", "through", "tried", "trouble", "used", "Wednesday", "yesterday", "young", "wouldn't"
+      "weeks": [
+        { "label": "Week 1", "date": null, "words": ["already", "although", "among", "August", "bought", "brought", "carry", "couple"] },
+        { "label": "Week 2", "date": null, "words": ["daughter", "December", "enough", "February", "instead", "January", "July", "laugh"] },
+        { "label": "Week 3", "date": null, "words": ["lunch", "mean", "might", "money", "often", "other", "person", "piece"] },
+        { "label": "Week 4", "date": null, "words": ["possible", "probably", "really", "Saturday", "scared", "several", "seen", "shown"] },
+        { "label": "Week 5", "date": null, "words": ["simple", "size", "something", "sound", "special", "start", "stay", "stood"] },
+        { "label": "Week 6", "date": null, "words": ["story", "stuff", "sure", "that's", "themselves", "these", "they're", "though"] },
+        { "label": "Week 7", "date": null, "words": ["thought", "through", "tried", "trouble", "used", "Wednesday", "yesterday", "young"] },
+        { "label": "Week 8", "date": null, "words": ["wouldn't"] }
       ]
     }
   ]

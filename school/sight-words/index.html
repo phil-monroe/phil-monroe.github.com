@@ -43,6 +43,32 @@
       padding: 20px 16px 40px;
     }
 
+    .top-bar {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      justify-content: space-between;
+      gap: 10px;
+      margin-bottom: 10px;
+    }
+
+    .top-btn {
+      font-family: inherit;
+      font-size: 0.78rem;
+      font-weight: 600;
+      color: var(--dim);
+      background: var(--card);
+      border: 2px solid var(--line);
+      border-radius: 10px;
+      padding: 6px 10px;
+      cursor: pointer;
+    }
+
+    .top-btn:hover {
+      color: var(--ink);
+      border-color: var(--purple);
+    }
+
     header {
       width: 100%;
       max-width: 480px;
@@ -274,6 +300,94 @@
       padding: 40px 10px;
     }
 
+    .modal-backdrop {
+      position: fixed;
+      inset: 0;
+      background: rgba(43, 36, 64, 0.45);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+      z-index: 100;
+    }
+
+    .modal {
+      background: var(--card);
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 480px;
+      max-height: 85vh;
+      display: flex;
+      flex-direction: column;
+      overflow: hidden;
+    }
+
+    .modal-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 16px 18px;
+      border-bottom: 2px solid var(--line);
+    }
+
+    .modal-header h2 {
+      font-size: 1.15rem;
+      margin: 0;
+    }
+
+    .modal-close {
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 700;
+      color: var(--dim);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px 8px;
+    }
+
+    .modal-close:hover {
+      color: var(--ink);
+    }
+
+    .modal-body {
+      padding: 16px 18px 20px;
+      overflow-y: auto;
+    }
+
+    .modal-quarter {
+      font-weight: 800;
+      font-size: 1.05rem;
+      color: var(--purple-dark);
+      margin: 16px 0 8px;
+    }
+
+    .modal-quarter:first-child {
+      margin-top: 0;
+    }
+
+    .modal-week {
+      margin-bottom: 10px;
+      padding-left: 6px;
+    }
+
+    .modal-week-label {
+      font-weight: 700;
+      font-size: 0.9rem;
+    }
+
+    .modal-week-date {
+      font-weight: 600;
+      font-size: 0.78rem;
+      color: var(--dim);
+    }
+
+    .modal-week-words {
+      font-size: 0.85rem;
+      color: var(--dim);
+      line-height: 1.4;
+    }
+
     [hidden] {
       display: none !important;
     }
@@ -281,6 +395,11 @@
 </head>
 
 <body>
+  <div class="top-bar">
+    <button class="top-btn" id="spotCheckBtn" title="Review every quarter, week, and word">📋 Review lists</button>
+    <button class="top-btn" id="thisWeekBtn" title="Jump to this week">📅 This week</button>
+  </div>
+
   <header>
     <h1>🐝 Sight Word Spelling</h1>
     <p class="subtitle">Say the word, then mark how she did.</p>
@@ -334,6 +453,16 @@
     </div>
   </main>
 
+  <div class="modal-backdrop" id="modalBackdrop" hidden>
+    <div class="modal">
+      <div class="modal-header">
+        <h2>All quarters &amp; weeks</h2>
+        <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
+      </div>
+      <div class="modal-body" id="modalBody"></div>
+    </div>
+  </div>
+
   <script>
     const loadingMsg = document.getElementById('loadingMsg');
     const errorMsg = document.getElementById('errorMsg');
@@ -352,12 +481,17 @@
     const doneStats = document.getElementById('doneStats');
     const againBtn = document.getElementById('againBtn');
     const resetBtn = document.getElementById('resetBtn');
+    const spotCheckBtn = document.getElementById('spotCheckBtn');
+    const thisWeekBtn = document.getElementById('thisWeekBtn');
+    const modalBackdrop = document.getElementById('modalBackdrop');
+    const modalBody = document.getElementById('modalBody');
+    const modalClose = document.getElementById('modalClose');
 
-    const STORAGE_KEY = 'sight-words-state-v2';
-    const WEEK_SIZE = 8;
+    const STORAGE_KEY = 'sight-words-state-v3';
 
-    let quarters = [];       // [{label, words}] as loaded from words.json
-    let weeklyUnits = [];    // quarters chunked into 8-word weeks
+    let quarters = [];       // [{label, weeks: [{label, date, words}]}] as loaded from words.json
+    let weeklyUnits = [];    // flattened {label, words, date} per week
+    let quarterUnits = [];   // flattened {label, words} per quarter (all weeks combined)
     let mode = 'weekly';     // 'weekly' | 'quarterly'
     let unitIndex = 0;
     let roundQueue = [];      // words left to get right this round (shuffled)
@@ -368,23 +502,70 @@
     let finished = false;
 
     function currentUnits() {
-      return mode === 'weekly' ? weeklyUnits : quarters;
-    }
-
-    function chunk(arr, size) {
-      const out = [];
-      for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
-      return out;
+      return mode === 'weekly' ? weeklyUnits : quarterUnits;
     }
 
     function buildWeeklyUnits(quarters) {
       const units = [];
       quarters.forEach((q) => {
-        chunk(q.words, WEEK_SIZE).forEach((words, wi) => {
-          units.push({ label: `${q.label} · Week ${wi + 1}`, words });
+        q.weeks.forEach((w) => {
+          units.push({ label: `${q.label} · ${w.label}`, words: w.words, date: w.date || null });
         });
       });
       return units;
+    }
+
+    function buildQuarterUnits(quarters) {
+      return quarters.map((q) => ({
+        label: q.label,
+        words: q.weeks.reduce((acc, w) => acc.concat(w.words), [])
+      }));
+    }
+
+    function findThisWeekIndex() {
+      const today = new Date();
+      today.setHours(0, 0, 0, 0);
+      let best = null;
+      let earliestFuture = null;
+
+      weeklyUnits.forEach((u, i) => {
+        if (!u.date) return;
+        const d = new Date(`${u.date}T00:00:00`);
+        if (d <= today) {
+          if (!best || d > best.date) best = { index: i, date: d };
+        } else if (!earliestFuture || d < earliestFuture.date) {
+          earliestFuture = { index: i, date: d };
+        }
+      });
+
+      if (best) return best.index;
+      if (earliestFuture) return earliestFuture.index;
+      return 0;
+    }
+
+    function renderSpotCheck() {
+      modalBody.innerHTML = '';
+      quarters.forEach((q) => {
+        const qEl = document.createElement('div');
+        qEl.className = 'modal-quarter';
+        qEl.textContent = q.label;
+        modalBody.appendChild(qEl);
+
+        q.weeks.forEach((w) => {
+          const wEl = document.createElement('div');
+          wEl.className = 'modal-week';
+          wEl.innerHTML = `
+            <div><span class="modal-week-label">${w.label}</span> <span class="modal-week-date">${w.date ? `(${w.date})` : '(no date set)'}</span></div>
+            <div class="modal-week-words">${w.words.join(', ')}</div>
+          `;
+          modalBody.appendChild(wEl);
+        });
+      });
+    }
+
+    function formatDate(dateStr) {
+      const d = new Date(`${dateStr}T00:00:00`);
+      return d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' });
     }
 
     function populateUnitSelect() {
@@ -393,7 +574,7 @@
       units.forEach((u, i) => {
         const opt = document.createElement('option');
         opt.value = i;
-        opt.textContent = u.label;
+        opt.textContent = u.date ? `${u.label} (${formatDate(u.date)})` : u.label;
         unitSelect.appendChild(opt);
       });
     }
@@ -539,6 +720,28 @@
       startRound(unitIndex);
     });
 
+    thisWeekBtn.addEventListener('click', () => {
+      mode = 'weekly';
+      modeSelect.value = mode;
+      populateUnitSelect();
+      const idx = findThisWeekIndex();
+      unitSelect.value = idx;
+      startRound(idx);
+    });
+
+    spotCheckBtn.addEventListener('click', () => {
+      renderSpotCheck();
+      modalBackdrop.hidden = false;
+    });
+
+    modalClose.addEventListener('click', () => {
+      modalBackdrop.hidden = true;
+    });
+
+    modalBackdrop.addEventListener('click', (e) => {
+      if (e.target === modalBackdrop) modalBackdrop.hidden = true;
+    });
+
     fetch('words.json', { cache: 'no-store' })
       .then((res) => {
         if (!res.ok) throw new Error('Could not load words.json');
@@ -548,12 +751,13 @@
         quarters = data.quarters || [];
         if (quarters.length === 0) throw new Error('No quarters found in words.json');
         weeklyUnits = buildWeeklyUnits(quarters);
+        quarterUnits = buildQuarterUnits(quarters);
 
         loadingMsg.hidden = true;
         pickerRow.hidden = false;
 
         const saved = loadState();
-        const savedUnits = saved && (saved.mode === 'weekly' ? weeklyUnits : quarters);
+        const savedUnits = saved && (saved.mode === 'weekly' ? weeklyUnits : quarterUnits);
         const savedUnit = savedUnits && savedUnits[saved.unitIndex];
         const savedMatches = savedUnit && savedUnit.label === saved.unitLabel;
 
