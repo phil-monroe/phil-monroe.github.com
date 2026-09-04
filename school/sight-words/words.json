@@ -2,9 +2,10 @@
   "quarters": [
     {
       "label": "Quarter 1",
+      "source": "https://docs.google.com/document/d/1g6FGFlmM_wdX-3jiYme4Tw5yJWlx-zwd90ss4wxRa-k/edit?tab=t.0",
       "weeks": [
-        { "label": "Week 1", "date": "2026-08-31", "words": ["able", "above", "across", "again", "animal", "both", "brother", "more"] },
-        { "label": "Week 2", "date": null, "words": ["much", "new", "next", "off", "only", "own", "than", "today"] },
+        { "label": "Week 1", "date": "2026-08-31", "words": ["able", "above", "again", "animal", "been", "both", "brother"] },
+        { "label": "Week 2", "date": null, "words": ["across", "more", "much", "new", "next", "off", "only", "own", "than", "today"] },
         { "label": "Week 3", "date": null, "words": ["week", "well", "wish", "which", "call", "catch", "doing", "done"] },
         { "label": "Week 4", "date": null, "words": ["full", "gave", "give", "goes", "help", "kept", "lady", "live"] },
         { "label": "Week 5", "date": null, "words": ["made", "paper", "place", "please", "pull", "read", "room", "same"] },
@@ -13,6 +14,7 @@
     },
     {
       "label": "Quarter 2",
+      "source": "https://docs.google.com/document/d/1VqJeELx0y43SAOje8X8ibWgPZfkWzW6foKI0OXH84oI/edit?tab=t.0",
       "weeks": [
         { "label": "Week 1", "date": null, "words": ["against", "almost", "always", "answer", "became", "began", "can't", "change"] },
         { "label": "Week 2", "date": null, "words": ["children", "city", "different", "early", "eight", "every", "family", "finally"] },
@@ -25,6 +27,7 @@
     },
     {
       "label": "Quarter 3",
+      "source": "https://docs.google.com/document/d/1bL3REoz5KXIehw7T9GnE_K1Cc-E53Qt9VMsJLwR7Qp0/edit?tab=t.0",
       "weeks": [
         { "label": "Week 1", "date": null, "words": ["America", "away", "beautiful", "behind", "breakfast", "country", "cousin", "draw"] },
         { "label": "Week 2", "date": null, "words": ["earth", "favorite", "father", "knew", "learn", "lose", "Monday", "mother"] },
@@ -38,6 +41,7 @@
     },
     {
       "label": "Quarter 4",
+      "source": "https://docs.google.com/document/d/1xrSCZH7zXOp0vs3HR-YVQ7j5ZZlNta8-JEKizdE_Of4/edit?tab=t.0",
       "weeks": [
         { "label": "Week 1", "date": null, "words": ["already", "although", "among", "August", "bought", "brought", "carry", "couple"] },
         { "label": "Week 2", "date": null, "words": ["daughter", "December", "enough", "February", "instead", "January", "July", "laugh"] },

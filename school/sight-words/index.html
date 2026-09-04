@@ -356,6 +356,10 @@
     }
 
     .modal-quarter {
+      display: flex;
+      align-items: baseline;
+      flex-wrap: wrap;
+      gap: 8px;
       font-weight: 800;
       font-size: 1.05rem;
       color: var(--purple-dark);
@@ -364,6 +368,17 @@
 
     .modal-quarter:first-child {
       margin-top: 0;
+    }
+
+    .modal-source-link {
+      font-weight: 600;
+      font-size: 0.78rem;
+      color: var(--dim);
+      text-decoration: underline;
+    }
+
+    .modal-source-link:hover {
+      color: var(--ink);
     }
 
     .modal-week {
@@ -548,7 +563,9 @@
       quarters.forEach((q) => {
         const qEl = document.createElement('div');
         qEl.className = 'modal-quarter';
-        qEl.textContent = q.label;
+        qEl.innerHTML = q.source
+          ? `${q.label} <a class="modal-source-link" href="${q.source}" target="_blank" rel="noopener">Source ↗</a>`
+          : q.label;
         modalBody.appendChild(qEl);
 
         q.weeks.forEach((w) => {
