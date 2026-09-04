@@ -119,6 +119,22 @@
       gap: 4px;
     }
 
+    .reset-btn {
+      font-family: inherit;
+      font-size: 0.85rem;
+      font-weight: 600;
+      color: var(--dim);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 2px 0 2px 6px;
+      text-decoration: underline;
+    }
+
+    .reset-btn:hover {
+      color: var(--ink);
+    }
+
     .card {
       position: relative;
       background: var(--card);
@@ -278,6 +294,7 @@
         <span class="stats">
           <span>✅ <span id="gotCount">0</span></span>
           <span>🔁 <span id="missCount">0</span></span>
+          <button class="reset-btn" id="resetBtn" title="Start this week's list over">↺ Reset</button>
         </span>
       </div>
 
@@ -317,13 +334,44 @@
     const doneScreen = document.getElementById('doneScreen');
     const doneStats = document.getElementById('doneStats');
     const againBtn = document.getElementById('againBtn');
+    const resetBtn = document.getElementById('resetBtn');
+
+    const STORAGE_KEY = 'sight-words-state-v1';
 
     let weeks = [];
+    let weekIndex = 0;
     let roundQueue = [];      // words left to get right this round (shuffled)
     let currentWord = null;
     let gotCount = 0;
     let missCount = 0;
     let roundTotal = 0;
+    let finished = false;
+
+    function saveState() {
+      try {
+        sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
+          weekIndex,
+          weekLabel: weeks[weekIndex] && weeks[weekIndex].label,
+          roundQueue,
+          currentWord,
+          gotCount,
+          missCount,
+          roundTotal,
+          finished
+        }));
+      } catch (e) {
+        // sessionStorage unavailable (private mode, etc) — just skip persistence
+      }
+    }
+
+    function loadState() {
+      try {
+        const raw = sessionStorage.getItem(STORAGE_KEY);
+        return raw ? JSON.parse(raw) : null;
+      } catch (e) {
+        return null;
+      }
+    }
 
     function shuffle(arr) {
       const a = arr.slice();
@@ -342,11 +390,13 @@
       window.speechSynthesis.speak(utter);
     }
 
-    function startRound(words) {
-      roundQueue = shuffle(words);
-      roundTotal = words.length;
+    function startRound(index) {
+      weekIndex = index;
+      roundQueue = shuffle(weeks[weekIndex].words);
+      roundTotal = weeks[weekIndex].words.length;
       gotCount = 0;
       missCount = 0;
+      finished = false;
       doneScreen.hidden = true;
       quiz.hidden = false;
       nextCard();
@@ -361,6 +411,7 @@
       wordDisplay.textContent = currentWord;
       updateProgress();
       speak(currentWord);
+      saveState();
     }
 
     function updateProgress() {
@@ -370,11 +421,35 @@
       missCountEl.textContent = missCount;
     }
 
-    function finishRound() {
+    function renderDone() {
       quiz.hidden = true;
       doneScreen.hidden = false;
-      const tries = gotCount + missCount;
       doneStats.textContent = `${roundTotal} words • ${missCount} needed another try`;
+    }
+
+    function finishRound() {
+      finished = true;
+      renderDone();
+      saveState();
+    }
+
+    function restoreState(saved) {
+      weekIndex = saved.weekIndex;
+      roundQueue = saved.roundQueue;
+      currentWord = saved.currentWord;
+      gotCount = saved.gotCount;
+      missCount = saved.missCount;
+      roundTotal = saved.roundTotal;
+      finished = saved.finished;
+
+      if (finished) {
+        renderDone();
+      } else {
+        quiz.hidden = false;
+        doneScreen.hidden = true;
+        wordDisplay.textContent = currentWord;
+        updateProgress();
+      }
     }
 
     speakBtn.addEventListener('click', () => speak(currentWord));
@@ -392,13 +467,15 @@
     });
 
     againBtn.addEventListener('click', () => {
-      const week = weeks[weekSelect.value];
-      startRound(week.words);
+      startRound(weekIndex);
     });
 
     weekSelect.addEventListener('change', () => {
-      const week = weeks[weekSelect.value];
-      startRound(week.words);
+      startRound(parseInt(weekSelect.value, 10));
+    });
+
+    resetBtn.addEventListener('click', () => {
+      startRound(weekIndex);
     });
 
     fetch('words.json', { cache: 'no-store' })
@@ -418,11 +495,20 @@
         });
 
         const lastIndex = weeks.length - 1;
-        weekSelect.value = lastIndex;
         weekPicker.hidden = weeks.length <= 1;
-
         loadingMsg.hidden = true;
-        startRound(weeks[lastIndex].words);
+
+        const saved = loadState();
+        const savedWeek = saved && weeks[saved.weekIndex];
+        const savedMatches = savedWeek && savedWeek.label === saved.weekLabel;
+
+        if (savedMatches) {
+          weekSelect.value = saved.weekIndex;
+          restoreState(saved);
+        } else {
+          weekSelect.value = lastIndex;
+          startRound(lastIndex);
+        }
       })
       .catch((err) => {
         loadingMsg.hidden = true;
