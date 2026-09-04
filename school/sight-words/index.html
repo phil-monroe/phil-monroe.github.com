@@ -62,20 +62,27 @@
       margin: 0;
     }
 
-    .week-picker {
+    .picker-row {
       width: 100%;
       max-width: 480px;
       display: flex;
-      align-items: center;
+      flex-wrap: wrap;
       justify-content: center;
-      gap: 10px;
+      gap: 10px 16px;
       margin-bottom: 18px;
     }
 
-    .week-picker label {
+    .picker {
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+    }
+
+    .picker label {
       font-weight: 600;
-      font-size: 0.95rem;
+      font-size: 0.8rem;
       color: var(--dim);
+      padding-left: 2px;
     }
 
     select {
@@ -279,13 +286,22 @@
     <p class="subtitle">Say the word, then mark how she did.</p>
   </header>
 
-  <div class="week-picker" id="weekPicker" hidden>
-    <label for="weekSelect">This week:</label>
-    <select id="weekSelect"></select>
+  <div class="picker-row" id="pickerRow" hidden>
+    <div class="picker">
+      <label for="modeSelect">Practice by</label>
+      <select id="modeSelect">
+        <option value="weekly">Week</option>
+        <option value="quarterly">Quarter</option>
+      </select>
+    </div>
+    <div class="picker">
+      <label for="unitSelect">Which</label>
+      <select id="unitSelect"></select>
+    </div>
   </div>
 
   <main>
-    <div id="loadingMsg" class="status-msg">Loading this week's words…</div>
+    <div id="loadingMsg" class="status-msg">Loading word lists…</div>
     <div id="errorMsg" class="status-msg" hidden></div>
 
     <div id="quiz" hidden>
@@ -294,7 +310,7 @@
         <span class="stats">
           <span>✅ <span id="gotCount">0</span></span>
           <span>🔁 <span id="missCount">0</span></span>
-          <button class="reset-btn" id="resetBtn" title="Start this week's list over">↺ Reset</button>
+          <button class="reset-btn" id="resetBtn" title="Start this list over">↺ Reset</button>
         </span>
       </div>
 
@@ -314,15 +330,16 @@
       <div class="done-emoji">🎉</div>
       <div class="done-title">All done!</div>
       <div class="done-stats" id="doneStats"></div>
-      <button class="again-btn" id="againBtn">Play this week again</button>
+      <button class="again-btn" id="againBtn">Play this list again</button>
     </div>
   </main>
 
   <script>
     const loadingMsg = document.getElementById('loadingMsg');
     const errorMsg = document.getElementById('errorMsg');
-    const weekPicker = document.getElementById('weekPicker');
-    const weekSelect = document.getElementById('weekSelect');
+    const pickerRow = document.getElementById('pickerRow');
+    const modeSelect = document.getElementById('modeSelect');
+    const unitSelect = document.getElementById('unitSelect');
     const quiz = document.getElementById('quiz');
     const progressLabel = document.getElementById('progressLabel');
     const gotCountEl = document.getElementById('gotCount');
@@ -336,10 +353,13 @@
     const againBtn = document.getElementById('againBtn');
     const resetBtn = document.getElementById('resetBtn');
 
-    const STORAGE_KEY = 'sight-words-state-v1';
+    const STORAGE_KEY = 'sight-words-state-v2';
+    const WEEK_SIZE = 8;
 
-    let weeks = [];
-    let weekIndex = 0;
+    let quarters = [];       // [{label, words}] as loaded from words.json
+    let weeklyUnits = [];    // quarters chunked into 8-word weeks
+    let mode = 'weekly';     // 'weekly' | 'quarterly'
+    let unitIndex = 0;
     let roundQueue = [];      // words left to get right this round (shuffled)
     let currentWord = null;
     let gotCount = 0;
@@ -347,11 +367,44 @@
     let roundTotal = 0;
     let finished = false;
 
+    function currentUnits() {
+      return mode === 'weekly' ? weeklyUnits : quarters;
+    }
+
+    function chunk(arr, size) {
+      const out = [];
+      for (let i = 0; i < arr.length; i += size) out.push(arr.slice(i, i + size));
+      return out;
+    }
+
+    function buildWeeklyUnits(quarters) {
+      const units = [];
+      quarters.forEach((q) => {
+        chunk(q.words, WEEK_SIZE).forEach((words, wi) => {
+          units.push({ label: `${q.label} · Week ${wi + 1}`, words });
+        });
+      });
+      return units;
+    }
+
+    function populateUnitSelect() {
+      const units = currentUnits();
+      unitSelect.innerHTML = '';
+      units.forEach((u, i) => {
+        const opt = document.createElement('option');
+        opt.value = i;
+        opt.textContent = u.label;
+        unitSelect.appendChild(opt);
+      });
+    }
+
     function saveState() {
       try {
+        const units = currentUnits();
         sessionStorage.setItem(STORAGE_KEY, JSON.stringify({
-          weekIndex,
-          weekLabel: weeks[weekIndex] && weeks[weekIndex].label,
+          mode,
+          unitIndex,
+          unitLabel: units[unitIndex] && units[unitIndex].label,
           roundQueue,
           currentWord,
           gotCount,
@@ -391,9 +444,10 @@
     }
 
     function startRound(index) {
-      weekIndex = index;
-      roundQueue = shuffle(weeks[weekIndex].words);
-      roundTotal = weeks[weekIndex].words.length;
+      unitIndex = index;
+      const words = currentUnits()[unitIndex].words;
+      roundQueue = shuffle(words);
+      roundTotal = words.length;
       gotCount = 0;
       missCount = 0;
       finished = false;
@@ -434,7 +488,7 @@
     }
 
     function restoreState(saved) {
-      weekIndex = saved.weekIndex;
+      unitIndex = saved.unitIndex;
       roundQueue = saved.roundQueue;
       currentWord = saved.currentWord;
       gotCount = saved.gotCount;
@@ -467,15 +521,22 @@
     });
 
     againBtn.addEventListener('click', () => {
-      startRound(weekIndex);
+      startRound(unitIndex);
     });
 
-    weekSelect.addEventListener('change', () => {
-      startRound(parseInt(weekSelect.value, 10));
+    modeSelect.addEventListener('change', () => {
+      mode = modeSelect.value;
+      populateUnitSelect();
+      unitSelect.value = 0;
+      startRound(0);
+    });
+
+    unitSelect.addEventListener('change', () => {
+      startRound(parseInt(unitSelect.value, 10));
     });
 
     resetBtn.addEventListener('click', () => {
-      startRound(weekIndex);
+      startRound(unitIndex);
     });
 
     fetch('words.json', { cache: 'no-store' })
@@ -484,30 +545,30 @@
         return res.json();
       })
       .then((data) => {
-        weeks = data.weeks || [];
-        if (weeks.length === 0) throw new Error('No weeks found in words.json');
+        quarters = data.quarters || [];
+        if (quarters.length === 0) throw new Error('No quarters found in words.json');
+        weeklyUnits = buildWeeklyUnits(quarters);
 
-        weeks.forEach((week, i) => {
-          const opt = document.createElement('option');
-          opt.value = i;
-          opt.textContent = week.label || `Week ${i + 1}`;
-          weekSelect.appendChild(opt);
-        });
-
-        const lastIndex = weeks.length - 1;
-        weekPicker.hidden = weeks.length <= 1;
         loadingMsg.hidden = true;
+        pickerRow.hidden = false;
 
         const saved = loadState();
-        const savedWeek = saved && weeks[saved.weekIndex];
-        const savedMatches = savedWeek && savedWeek.label === saved.weekLabel;
+        const savedUnits = saved && (saved.mode === 'weekly' ? weeklyUnits : quarters);
+        const savedUnit = savedUnits && savedUnits[saved.unitIndex];
+        const savedMatches = savedUnit && savedUnit.label === saved.unitLabel;
 
         if (savedMatches) {
-          weekSelect.value = saved.weekIndex;
+          mode = saved.mode;
+          modeSelect.value = mode;
+          populateUnitSelect();
+          unitSelect.value = saved.unitIndex;
           restoreState(saved);
         } else {
-          weekSelect.value = lastIndex;
-          startRound(lastIndex);
+          mode = 'weekly';
+          modeSelect.value = mode;
+          populateUnitSelect();
+          unitSelect.value = 0;
+          startRound(0);
         }
       })
       .catch((err) => {

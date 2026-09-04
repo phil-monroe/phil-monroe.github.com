@@ -1,16 +1,38 @@
 {
-  "weeks": [
+  "quarters": [
     {
-      "label": "Week 1",
-      "words": ["able", "above", "across", "again", "animal", "been", "both", "brother"]
+      "label": "Quarter 1",
+      "words": [
+        "able", "above", "across", "again", "animal", "both", "brother",
+        "more", "much", "new", "next", "off", "only", "own",
+        "than", "today", "week", "well", "wish", "which",
+        "call", "catch", "doing", "done", "full", "gave", "give", "goes", "help", "kept", "lady", "live", "made",
+        "paper", "place", "please", "pull", "read", "room", "same", "sit", "sky", "shall", "sure", "take", "tell"
+      ]
     },
     {
-      "label": "Example: Week 2",
-      "words": ["build", "carry", "caught", "children", "cold", "does", "eight", "every"]
+      "label": "Quarter 2",
+      "words": [
+        "against", "almost", "always", "answer", "became", "began", "can't", "change", "children", "city", "different", "early", "eight", "every", "family", "finally", "great", "hour", "house", "inside", "know",
+        "large", "light", "maybe", "mind", "move", "need", "number", "once", "picture", "pretty", "right", "school", "second", "short", "sister", "sleep", "something", "stand", "state", "still", "stop",
+        "teacher", "them", "together", "took", "tree", "under", "use", "walk", "winter", "woke", "yard", "year"
+      ]
     },
     {
-      "label": "Example: Week 3",
-      "words": ["family", "father", "found", "great", "hold", "listen", "mother", "young"]
+      "label": "Quarter 3",
+      "words": [
+        "America", "away", "beautiful", "behind", "breakfast", "country", "cousin", "draw", "earth", "favorite", "father", "knew", "learn", "lose", "Monday", "mother", "myself", "never", "night", "ocean", "party", "perhaps",
+        "ready", "round", "sea", "shall", "since", "snow", "someone", "son", "soon", "space", "store", "street", "such", "summer", "teach", "their", "things", "think", "third", "thought", "throw", "told",
+        "tomorrow", "Tuesday", "turned", "until", "wanted", "wasn't", "watch", "week", "whole", "whose", "while", "without", "won", "world", "those"
+      ]
+    },
+    {
+      "label": "Quarter 4",
+      "words": [
+        "already", "although", "among", "August", "bought", "brought", "carry", "couple", "daughter", "December", "enough", "February", "instead", "January", "July", "laugh", "lunch", "mean", "might", "money", "often",
+        "other", "person", "piece", "possible", "probably", "really", "Saturday", "scared", "several", "seen", "shown", "simple", "size", "something", "sound", "special", "start", "stay", "stood", "story", "stuff",
+        "sure", "that's", "themselves", "these", "they're", "though", "thought", "through", "tried", "trouble", "used", "Wednesday", "yesterday", "young", "wouldn't"
+      ]
     }
   ]
 }
