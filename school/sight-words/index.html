@@ -1,0 +1,476 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+  <title>Sight Words Practice</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Baloo+2:wght@500;600;700;800&display=swap" rel="stylesheet">
+  <style>
+    :root {
+      --bg: #fef6e4;
+      --card: #ffffff;
+      --ink: #2b2440;
+      --dim: #7a7290;
+      --purple: #8763e0;
+      --purple-dark: #6a45c9;
+      --green: #3fb27f;
+      --green-dark: #2f9269;
+      --red: #e8615a;
+      --red-dark: #cf4941;
+      --line: #ecdfc8;
+      --radius: 20px;
+    }
+
+    * { box-sizing: border-box; }
+
+    html, body {
+      margin: 0;
+      padding: 0;
+      height: 100%;
+    }
+
+    body {
+      background: var(--bg);
+      color: var(--ink);
+      font-family: 'Baloo 2', system-ui, sans-serif;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      padding: 20px 16px 40px;
+    }
+
+    header {
+      width: 100%;
+      max-width: 480px;
+      text-align: center;
+      margin-bottom: 18px;
+    }
+
+    h1 {
+      font-size: 1.7rem;
+      font-weight: 800;
+      margin: 4px 0 2px;
+    }
+
+    .subtitle {
+      color: var(--dim);
+      font-size: 0.95rem;
+      margin: 0;
+    }
+
+    .week-picker {
+      width: 100%;
+      max-width: 480px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+      margin-bottom: 18px;
+    }
+
+    .week-picker label {
+      font-weight: 600;
+      font-size: 0.95rem;
+      color: var(--dim);
+    }
+
+    select {
+      font-family: inherit;
+      font-size: 1rem;
+      font-weight: 600;
+      color: var(--ink);
+      background: var(--card);
+      border: 2px solid var(--line);
+      border-radius: 12px;
+      padding: 8px 14px;
+    }
+
+    main {
+      width: 100%;
+      max-width: 480px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .progress {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      font-size: 0.9rem;
+      color: var(--dim);
+      font-weight: 600;
+      margin-bottom: 10px;
+      padding: 0 4px;
+    }
+
+    .progress .stats {
+      display: flex;
+      gap: 12px;
+    }
+
+    .progress .stats span {
+      display: inline-flex;
+      align-items: center;
+      gap: 4px;
+    }
+
+    .card {
+      background: var(--card);
+      border-radius: var(--radius);
+      box-shadow: 0 6px 0 var(--line), 0 10px 24px rgba(43, 36, 64, 0.08);
+      padding: 36px 24px;
+      min-height: 300px;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 22px;
+      text-align: center;
+    }
+
+    .speak-btn {
+      width: 96px;
+      height: 96px;
+      border-radius: 50%;
+      border: none;
+      background: var(--purple);
+      color: white;
+      font-size: 2.5rem;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      box-shadow: 0 5px 0 var(--purple-dark);
+      transition: transform 0.06s ease;
+    }
+
+    .speak-btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 1px 0 var(--purple-dark);
+    }
+
+    .speak-hint {
+      color: var(--dim);
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-top: -8px;
+    }
+
+    .word-reveal {
+      font-size: 2.6rem;
+      font-weight: 800;
+      letter-spacing: 0.12em;
+      color: var(--purple-dark);
+      min-height: 3.4rem;
+      word-break: break-word;
+    }
+
+    .word-reveal.hidden-word {
+      visibility: hidden;
+    }
+
+    .show-btn {
+      font-family: inherit;
+      font-size: 1.15rem;
+      font-weight: 700;
+      color: white;
+      background: var(--ink);
+      border: none;
+      border-radius: 14px;
+      padding: 14px 28px;
+      cursor: pointer;
+      box-shadow: 0 5px 0 #17132a;
+    }
+
+    .show-btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 1px 0 #17132a;
+    }
+
+    .judge-row {
+      display: flex;
+      gap: 14px;
+      width: 100%;
+    }
+
+    .judge-btn {
+      flex: 1;
+      font-family: inherit;
+      font-size: 1.1rem;
+      font-weight: 700;
+      color: white;
+      border: none;
+      border-radius: 14px;
+      padding: 16px 10px;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+    }
+
+    .judge-btn.miss {
+      background: var(--red);
+      box-shadow: 0 5px 0 var(--red-dark);
+    }
+
+    .judge-btn.got {
+      background: var(--green);
+      box-shadow: 0 5px 0 var(--green-dark);
+    }
+
+    .judge-btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 1px 0 currentColor;
+    }
+
+    .done-screen {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .done-emoji {
+      font-size: 3.5rem;
+    }
+
+    .done-title {
+      font-size: 1.5rem;
+      font-weight: 800;
+    }
+
+    .done-stats {
+      color: var(--dim);
+      font-weight: 600;
+    }
+
+    .again-btn {
+      margin-top: 8px;
+      font-family: inherit;
+      font-size: 1.05rem;
+      font-weight: 700;
+      color: white;
+      background: var(--purple);
+      border: none;
+      border-radius: 14px;
+      padding: 14px 26px;
+      cursor: pointer;
+      box-shadow: 0 5px 0 var(--purple-dark);
+    }
+
+    .again-btn:active {
+      transform: translateY(4px);
+      box-shadow: 0 1px 0 var(--purple-dark);
+    }
+
+    .status-msg {
+      text-align: center;
+      color: var(--dim);
+      font-weight: 600;
+      padding: 40px 10px;
+    }
+
+    [hidden] {
+      display: none !important;
+    }
+  </style>
+</head>
+
+<body>
+  <header>
+    <h1>🐝 Sight Word Spelling</h1>
+    <p class="subtitle">Listen, spell it out loud, then check yourself.</p>
+  </header>
+
+  <div class="week-picker" id="weekPicker" hidden>
+    <label for="weekSelect">This week:</label>
+    <select id="weekSelect"></select>
+  </div>
+
+  <main>
+    <div id="loadingMsg" class="status-msg">Loading this week's words…</div>
+    <div id="errorMsg" class="status-msg" hidden></div>
+
+    <div id="quiz" hidden>
+      <div class="progress">
+        <span id="progressLabel"></span>
+        <span class="stats">
+          <span>✅ <span id="gotCount">0</span></span>
+          <span>🔁 <span id="missCount">0</span></span>
+        </span>
+      </div>
+
+      <div class="card">
+        <div id="playCard">
+          <button class="speak-btn" id="speakBtn" aria-label="Say the word again">🔊</button>
+          <p class="speak-hint">Tap to hear the word again</p>
+        </div>
+
+        <div class="word-reveal hidden-word" id="wordReveal"></div>
+
+        <button class="show-btn" id="showBtn">Show spelling</button>
+
+        <div class="judge-row" id="judgeRow" hidden>
+          <button class="judge-btn miss" id="missBtn">✗ Missed it</button>
+          <button class="judge-btn got" id="gotBtn">✓ Got it!</button>
+        </div>
+      </div>
+    </div>
+
+    <div id="doneScreen" class="card done-screen" hidden>
+      <div class="done-emoji">🎉</div>
+      <div class="done-title">All done!</div>
+      <div class="done-stats" id="doneStats"></div>
+      <button class="again-btn" id="againBtn">Play this week again</button>
+    </div>
+  </main>
+
+  <script>
+    const loadingMsg = document.getElementById('loadingMsg');
+    const errorMsg = document.getElementById('errorMsg');
+    const weekPicker = document.getElementById('weekPicker');
+    const weekSelect = document.getElementById('weekSelect');
+    const quiz = document.getElementById('quiz');
+    const progressLabel = document.getElementById('progressLabel');
+    const gotCountEl = document.getElementById('gotCount');
+    const missCountEl = document.getElementById('missCount');
+    const wordReveal = document.getElementById('wordReveal');
+    const speakBtn = document.getElementById('speakBtn');
+    const showBtn = document.getElementById('showBtn');
+    const judgeRow = document.getElementById('judgeRow');
+    const missBtn = document.getElementById('missBtn');
+    const gotBtn = document.getElementById('gotBtn');
+    const doneScreen = document.getElementById('doneScreen');
+    const doneStats = document.getElementById('doneStats');
+    const againBtn = document.getElementById('againBtn');
+
+    let weeks = [];
+    let roundQueue = [];      // words left to get right this round (shuffled)
+    let currentWord = null;
+    let gotCount = 0;
+    let missCount = 0;
+    let roundTotal = 0;
+
+    function shuffle(arr) {
+      const a = arr.slice();
+      for (let i = a.length - 1; i > 0; i--) {
+        const j = Math.floor(Math.random() * (i + 1));
+        [a[i], a[j]] = [a[j], a[i]];
+      }
+      return a;
+    }
+
+    function speak(word) {
+      if (!('speechSynthesis' in window)) return;
+      window.speechSynthesis.cancel();
+      const utter = new SpeechSynthesisUtterance(word);
+      utter.rate = 0.85;
+      window.speechSynthesis.speak(utter);
+    }
+
+    function startRound(words) {
+      roundQueue = shuffle(words);
+      roundTotal = words.length;
+      gotCount = 0;
+      missCount = 0;
+      doneScreen.hidden = true;
+      quiz.hidden = false;
+      nextCard();
+    }
+
+    function nextCard() {
+      if (roundQueue.length === 0) {
+        finishRound();
+        return;
+      }
+      currentWord = roundQueue.shift();
+      wordReveal.textContent = currentWord;
+      wordReveal.classList.add('hidden-word');
+      showBtn.hidden = false;
+      judgeRow.hidden = true;
+      updateProgress();
+      speak(currentWord);
+    }
+
+    function updateProgress() {
+      const remaining = roundQueue.length + 1;
+      progressLabel.textContent = `${remaining} word${remaining === 1 ? '' : 's'} to go`;
+      gotCountEl.textContent = gotCount;
+      missCountEl.textContent = missCount;
+    }
+
+    function finishRound() {
+      quiz.hidden = true;
+      doneScreen.hidden = false;
+      const tries = gotCount + missCount;
+      doneStats.textContent = `${roundTotal} words • ${missCount} needed another try`;
+    }
+
+    speakBtn.addEventListener('click', () => speak(currentWord));
+
+    showBtn.addEventListener('click', () => {
+      wordReveal.classList.remove('hidden-word');
+      showBtn.hidden = true;
+      judgeRow.hidden = false;
+    });
+
+    gotBtn.addEventListener('click', () => {
+      gotCount++;
+      nextCard();
+    });
+
+    missBtn.addEventListener('click', () => {
+      missCount++;
+      roundQueue.push(currentWord);
+      roundQueue = shuffle(roundQueue);
+      nextCard();
+    });
+
+    againBtn.addEventListener('click', () => {
+      const week = weeks[weekSelect.value];
+      startRound(week.words);
+    });
+
+    weekSelect.addEventListener('change', () => {
+      const week = weeks[weekSelect.value];
+      startRound(week.words);
+    });
+
+    fetch('words.json', { cache: 'no-store' })
+      .then((res) => {
+        if (!res.ok) throw new Error('Could not load words.json');
+        return res.json();
+      })
+      .then((data) => {
+        weeks = data.weeks || [];
+        if (weeks.length === 0) throw new Error('No weeks found in words.json');
+
+        weeks.forEach((week, i) => {
+          const opt = document.createElement('option');
+          opt.value = i;
+          opt.textContent = week.label || `Week ${i + 1}`;
+          weekSelect.appendChild(opt);
+        });
+
+        const lastIndex = weeks.length - 1;
+        weekSelect.value = lastIndex;
+        weekPicker.hidden = weeks.length <= 1;
+
+        loadingMsg.hidden = true;
+        startRound(weeks[lastIndex].words);
+      })
+      .catch((err) => {
+        loadingMsg.hidden = true;
+        errorMsg.hidden = false;
+        errorMsg.textContent = `⚠️ ${err.message}`;
+      });
+  </script>
+</body>
+
+</html>
