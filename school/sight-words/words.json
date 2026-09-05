@@ -5,11 +5,11 @@
       "source": "https://docs.google.com/document/d/1g6FGFlmM_wdX-3jiYme4Tw5yJWlx-zwd90ss4wxRa-k/edit?tab=t.0",
       "weeks": [
         { "label": "Week 1", "date": "2026-08-31", "words": ["able", "above", "again", "animal", "been", "both", "brother"] },
-        { "label": "Week 2", "date": null, "words": ["across", "more", "much", "new", "next", "off", "only", "own", "than", "today"] },
-        { "label": "Week 3", "date": null, "words": ["week", "well", "wish", "which", "call", "catch", "doing", "done"] },
-        { "label": "Week 4", "date": null, "words": ["full", "gave", "give", "goes", "help", "kept", "lady", "live"] },
-        { "label": "Week 5", "date": null, "words": ["made", "paper", "place", "please", "pull", "read", "room", "same"] },
-        { "label": "Week 6", "date": null, "words": ["sit", "sky", "shall", "sure", "take", "tell"] }
+        { "label": "Week 2", "date": null, "words": ["call", "catch", "doing", "done", "full", "gave", "give", "goes"] },
+        { "label": "Week 3", "date": null, "words": ["across", "more", "much", "new", "next", "off", "only", "own"] },
+        { "label": "Week 4", "date": null, "words": ["than", "today", "week", "well", "wish", "which", "help", "kept"] },
+        { "label": "Week 5", "date": null, "words": ["lady", "live", "made", "paper", "place", "please", "pull", "read"] },
+        { "label": "Week 6", "date": null, "words": ["room", "same", "sit", "sky", "shall", "sure", "take", "tell"] }
       ]
     },
     {
