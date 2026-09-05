@@ -403,6 +403,71 @@
       line-height: 1.4;
     }
 
+    .modal-extra-list {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+      margin-bottom: 12px;
+    }
+
+    .modal-extra-chip {
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: var(--bg);
+      border: 2px solid var(--line);
+      border-radius: 999px;
+      padding: 4px 6px 4px 12px;
+      font-size: 0.85rem;
+      font-weight: 600;
+    }
+
+    .modal-extra-remove {
+      font-family: inherit;
+      font-size: 0.75rem;
+      color: var(--dim);
+      background: none;
+      border: none;
+      cursor: pointer;
+      padding: 4px 6px;
+      line-height: 1;
+    }
+
+    .modal-extra-remove:hover {
+      color: var(--red);
+    }
+
+    .modal-extra-add-row {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .modal-extra-add-row input {
+      flex: 1;
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 600;
+      color: var(--ink);
+      background: var(--card);
+      border: 2px solid var(--line);
+      border-radius: 10px;
+      padding: 8px 12px;
+      min-width: 0;
+    }
+
+    .modal-extra-add-row button {
+      font-family: inherit;
+      font-size: 0.9rem;
+      font-weight: 700;
+      color: white;
+      background: var(--purple);
+      border: none;
+      border-radius: 10px;
+      padding: 8px 16px;
+      cursor: pointer;
+    }
+
     [hidden] {
       display: none !important;
     }
@@ -426,9 +491,10 @@
       <select id="modeSelect">
         <option value="weekly">Week</option>
         <option value="quarterly">Quarter</option>
+        <option value="extra">Extra practice</option>
       </select>
     </div>
-    <div class="picker">
+    <div class="picker" id="unitPicker">
       <label for="unitSelect">Which</label>
       <select id="unitSelect"></select>
     </div>
@@ -437,6 +503,7 @@
   <main>
     <div id="loadingMsg" class="status-msg">Loading word lists…</div>
     <div id="errorMsg" class="status-msg" hidden></div>
+    <div id="noExtraMsg" class="status-msg" hidden>No extra practice words yet. Add some from 📋 Review lists.</div>
 
     <div id="quiz" hidden>
       <div class="progress">
@@ -471,7 +538,7 @@
   <div class="modal-backdrop" id="modalBackdrop" hidden>
     <div class="modal">
       <div class="modal-header">
-        <h2>All quarters &amp; weeks</h2>
+        <h2>Review lists</h2>
         <button class="modal-close" id="modalClose" aria-label="Close">✕</button>
       </div>
       <div class="modal-body" id="modalBody"></div>
@@ -481,8 +548,10 @@
   <script>
     const loadingMsg = document.getElementById('loadingMsg');
     const errorMsg = document.getElementById('errorMsg');
+    const noExtraMsg = document.getElementById('noExtraMsg');
     const pickerRow = document.getElementById('pickerRow');
     const modeSelect = document.getElementById('modeSelect');
+    const unitPicker = document.getElementById('unitPicker');
     const unitSelect = document.getElementById('unitSelect');
     const quiz = document.getElementById('quiz');
     const progressLabel = document.getElementById('progressLabel');
@@ -503,11 +572,13 @@
     const modalClose = document.getElementById('modalClose');
 
     const STORAGE_KEY = 'sight-words-state-v3';
+    const EXTRA_WORDS_KEY = 'sight-words-extra-practice-v1';
 
     let quarters = [];       // [{label, weeks: [{label, date, words}]}] as loaded from words.json
     let weeklyUnits = [];    // flattened {label, words, date} per week
     let quarterUnits = [];   // flattened {label, words} per quarter (all weeks combined)
-    let mode = 'weekly';     // 'weekly' | 'quarterly'
+    let extraWords = [];     // words missed on tests, kept around for repeat practice
+    let mode = 'weekly';     // 'weekly' | 'quarterly' | 'extra'
     let unitIndex = 0;
     let roundQueue = [];      // words left to get right this round (shuffled)
     let currentWord = null;
@@ -516,8 +587,53 @@
     let roundTotal = 0;
     let finished = false;
 
+    function unitsForMode(m) {
+      if (m === 'weekly') return weeklyUnits;
+      if (m === 'quarterly') return quarterUnits;
+      return [{ label: 'Extra Practice Words', words: extraWords, date: null }];
+    }
+
     function currentUnits() {
-      return mode === 'weekly' ? weeklyUnits : quarterUnits;
+      return unitsForMode(mode);
+    }
+
+    function loadExtraWords(seed) {
+      try {
+        const raw = localStorage.getItem(EXTRA_WORDS_KEY);
+        if (raw) {
+          const parsed = JSON.parse(raw);
+          if (Array.isArray(parsed)) return parsed;
+        }
+      } catch (e) {
+        // localStorage unavailable (private mode, etc) — fall back to the seed list
+      }
+      return seed.slice();
+    }
+
+    function saveExtraWords() {
+      try {
+        localStorage.setItem(EXTRA_WORDS_KEY, JSON.stringify(extraWords));
+      } catch (e) {
+        // localStorage unavailable — edits just won't persist across visits
+      }
+    }
+
+    function addExtraWord(word) {
+      const clean = word.trim();
+      if (!clean) return;
+      const exists = extraWords.some((w) => w.toLowerCase() === clean.toLowerCase());
+      if (!exists) {
+        extraWords.push(clean);
+        saveExtraWords();
+      }
+    }
+
+    function removeExtraWord(word) {
+      const idx = extraWords.indexOf(word);
+      if (idx !== -1) {
+        extraWords.splice(idx, 1);
+        saveExtraWords();
+      }
     }
 
     function buildWeeklyUnits(quarters) {
@@ -558,8 +674,41 @@
       return 0;
     }
 
+    function renderExtraSection() {
+      const heading = document.createElement('div');
+      heading.className = 'modal-quarter';
+      heading.textContent = '⭐ Extra Practice Words';
+      modalBody.appendChild(heading);
+
+      const listEl = document.createElement('div');
+      listEl.className = 'modal-extra-list';
+      if (extraWords.length === 0) {
+        const empty = document.createElement('div');
+        empty.className = 'modal-week-words';
+        empty.textContent = 'No extra practice words yet.';
+        listEl.appendChild(empty);
+      } else {
+        extraWords.forEach((word) => {
+          const chip = document.createElement('span');
+          chip.className = 'modal-extra-chip';
+          chip.innerHTML = `${word} <button type="button" class="modal-extra-remove" data-word="${word}" aria-label="Remove ${word}">✕</button>`;
+          listEl.appendChild(chip);
+        });
+      }
+      modalBody.appendChild(listEl);
+
+      const form = document.createElement('form');
+      form.className = 'modal-extra-add-row';
+      form.innerHTML = `
+        <input type="text" id="extraWordInput" placeholder="Add a word…" autocomplete="off">
+        <button type="submit">Add</button>
+      `;
+      modalBody.appendChild(form);
+    }
+
     function renderSpotCheck() {
       modalBody.innerHTML = '';
+      renderExtraSection();
       quarters.forEach((q) => {
         const qEl = document.createElement('div');
         qEl.className = 'modal-quarter';
@@ -594,6 +743,7 @@
         opt.textContent = u.date ? `${u.label} (${formatDate(u.date)})` : u.label;
         unitSelect.appendChild(opt);
       });
+      unitPicker.hidden = units.length <= 1;
     }
 
     function saveState() {
@@ -644,6 +794,14 @@
     function startRound(index) {
       unitIndex = index;
       const words = currentUnits()[unitIndex].words;
+      noExtraMsg.hidden = true;
+      if (mode === 'extra' && words.length === 0) {
+        quiz.hidden = true;
+        doneScreen.hidden = true;
+        noExtraMsg.hidden = false;
+        saveState();
+        return;
+      }
       roundQueue = shuffle(words);
       roundTotal = words.length;
       gotCount = 0;
@@ -686,6 +844,13 @@
 
     function restoreState(saved) {
       unitIndex = saved.unitIndex;
+      noExtraMsg.hidden = true;
+      if (mode === 'extra' && currentUnits()[unitIndex].words.length === 0) {
+        quiz.hidden = true;
+        doneScreen.hidden = true;
+        noExtraMsg.hidden = false;
+        return;
+      }
       roundQueue = saved.roundQueue;
       currentWord = saved.currentWord;
       gotCount = saved.gotCount;
@@ -750,12 +915,37 @@
       modalBackdrop.hidden = false;
     });
 
-    modalClose.addEventListener('click', () => {
+    function closeModal() {
       modalBackdrop.hidden = true;
-    });
+      if (mode === 'extra') {
+        populateUnitSelect();
+        startRound(0);
+      }
+    }
+
+    modalClose.addEventListener('click', closeModal);
 
     modalBackdrop.addEventListener('click', (e) => {
-      if (e.target === modalBackdrop) modalBackdrop.hidden = true;
+      if (e.target === modalBackdrop) closeModal();
+    });
+
+    modalBody.addEventListener('click', (e) => {
+      const removeBtn = e.target.closest('.modal-extra-remove');
+      if (removeBtn) {
+        removeExtraWord(removeBtn.dataset.word);
+        renderSpotCheck();
+      }
+    });
+
+    modalBody.addEventListener('submit', (e) => {
+      if (e.target.classList.contains('modal-extra-add-row')) {
+        e.preventDefault();
+        const input = document.getElementById('extraWordInput');
+        addExtraWord(input.value);
+        renderSpotCheck();
+        const newInput = document.getElementById('extraWordInput');
+        if (newInput) newInput.focus();
+      }
     });
 
     fetch('words.json', { cache: 'no-store' })
@@ -768,12 +958,14 @@
         if (quarters.length === 0) throw new Error('No quarters found in words.json');
         weeklyUnits = buildWeeklyUnits(quarters);
         quarterUnits = buildQuarterUnits(quarters);
+        extraWords = loadExtraWords(data.extraPractice || []);
+        saveExtraWords();
 
         loadingMsg.hidden = true;
         pickerRow.hidden = false;
 
         const saved = loadState();
-        const savedUnits = saved && (saved.mode === 'weekly' ? weeklyUnits : quarterUnits);
+        const savedUnits = saved && unitsForMode(saved.mode);
         const savedUnit = savedUnits && savedUnits[saved.unitIndex];
         const savedMatches = savedUnit && savedUnit.label === saved.unitLabel;
 
