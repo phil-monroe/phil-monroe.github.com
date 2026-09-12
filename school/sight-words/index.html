@@ -654,23 +654,26 @@
     }
 
     function findThisWeekIndex() {
+      // Week dates are the Friday spelling test date. "This week" is the
+      // week of the next upcoming Friday (today counts, so on test day
+      // itself it stays on that week rather than jumping ahead).
       const today = new Date();
       today.setHours(0, 0, 0, 0);
-      let best = null;
-      let earliestFuture = null;
+      let upcoming = null;
+      let mostRecentPast = null;
 
       weeklyUnits.forEach((u, i) => {
         if (!u.date) return;
         const d = new Date(`${u.date}T00:00:00`);
-        if (d <= today) {
-          if (!best || d > best.date) best = { index: i, date: d };
-        } else if (!earliestFuture || d < earliestFuture.date) {
-          earliestFuture = { index: i, date: d };
+        if (d >= today) {
+          if (!upcoming || d < upcoming.date) upcoming = { index: i, date: d };
+        } else if (!mostRecentPast || d > mostRecentPast.date) {
+          mostRecentPast = { index: i, date: d };
         }
       });
 
-      if (best) return best.index;
-      if (earliestFuture) return earliestFuture.index;
+      if (upcoming) return upcoming.index;
+      if (mostRecentPast) return mostRecentPast.index;
       return 0;
     }
 
