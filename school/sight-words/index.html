@@ -982,8 +982,9 @@
           mode = 'weekly';
           modeSelect.value = mode;
           populateUnitSelect();
-          unitSelect.value = 0;
-          startRound(0);
+          const idx = findThisWeekIndex();
+          unitSelect.value = idx;
+          startRound(idx);
         }
       })
       .catch((err) => {
