@@ -5,12 +5,12 @@
       "label": "Quarter 1",
       "source": "https://docs.google.com/document/d/1g6FGFlmM_wdX-3jiYme4Tw5yJWlx-zwd90ss4wxRa-k/edit?tab=t.0",
       "weeks": [
-        { "label": "Week 1", "date": "2026-09-04", "words": ["able", "above", "again", "animal", "been", "both", "brother"] },
+        { "label": "Week 1", "date": "2026-09-04", "words": ["able", "above", "across", "again", "animal", "both", "brother"] },
         { "label": "Week 2", "date": "2026-09-11", "words": ["call", "catch", "doing", "done", "full", "gave", "give", "goes"] },
         { "label": "Week 3", "date": "2026-09-18", "words": ["help", "kept", "lady", "live", "made", "more", "much", "new"] },
         { "label": "Week 4", "date": "2026-09-25", "words": ["next", "off", "only", "own", "paper", "place", "please", "pull"] },
         { "label": "Week 5", "date": "2026-10-02", "words": ["read", "room", "same", "sit", "sky", "shall", "sure", "take"] },
-        { "label": "Week 6", "date": "2026-10-09", "words": ["tell", "than", "today", "week", "well", "wish", "which", "across"] }
+        { "label": "Week 6", "date": "2026-10-09", "words": ["tell", "than", "today", "week", "well", "wish", "which"] }
       ]
     },
     {
